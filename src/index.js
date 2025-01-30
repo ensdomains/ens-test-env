@@ -69,7 +69,8 @@ program
   .command('start')
   .description('Starts the test environment')
   .addOption(new Option('--no-reset', "Don't reset the data folder"))
-  .addOption(new Option('--exit-after-deploy', 'Exit after contract deployment').default(false))
+  .addOption(new Option('--exit-after-deploy', 'Exit after contract deployment'))
+  .option('--debug', 'Enable debug logging')
   .addOption(
     new Option('-s, --save', 'Save data when exiting').implies({
       killGracefully: true,
@@ -97,7 +98,11 @@ program
     }
     const managerOptions = {
       ...options,
-      exitAfterDeploy: options.exitAfterDeploy || false
+      exitAfterDeploy: Boolean(options.exitAfterDeploy)
+    }
+    if (options.debug) {
+      console.log('[debug] Raw options:', options)
+      console.log('[debug] Manager options:', managerOptions)
     }
     manager(config, managerOptions)
   })
