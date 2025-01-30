@@ -253,10 +253,8 @@ export const main = async (_config, _options, justKill) => {
 
     if (options.exitAfterDeploy) {
       console.log('\x1b[1;34m[config]\x1b[0m ', 'Exiting after contract deployment...')
-      // Set killGracefully to false to ensure immediate cleanup
-      options.killGracefully = false
-      // Call cleanup with SIGINT to force immediate exit
-      await cleanup(undefined, 'SIGINT')
+      // Force immediate exit after deployment
+      process.kill(process.pid, 'SIGTERM')
     }
 
     if (options.extraTime) {
