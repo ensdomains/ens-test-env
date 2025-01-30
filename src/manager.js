@@ -253,17 +253,10 @@ export const main = async (_config, _options, justKill) => {
 
     if (options.exitAfterDeploy) {
       console.log('\x1b[1;34m[config]\x1b[0m ', 'Exiting after contract deployment...')
-      cleanupRunning = true
-      const compose = await getCompose()
-      await compose.kill({
-        ...opts,
-        log: false,
-      }).catch(() => console.error('kill failed'))
-      await compose.rm({
-        ...opts,
-        log: false,
-      }).catch(() => console.error('rm failed'))
-      process.exit(0)
+      // Set killGracefully to false to ensure immediate cleanup
+      options.killGracefully = false
+      // Call cleanup with SIGINT to force immediate exit
+      await cleanup(undefined, 'SIGINT')
     }
 
     if (options.extraTime) {
