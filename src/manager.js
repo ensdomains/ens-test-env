@@ -253,11 +253,16 @@ export const main = async (_config, _options, justKill) => {
 
     if (options.exitAfterDeploy) {
       console.log('\x1b[1;34m[config]\x1b[0m ', 'Exiting after contract deployment...')
+      cleanupRunning = true
       const compose = await getCompose()
-      await compose.down({
+      await compose.kill({
         ...opts,
         log: false,
-      }).catch(() => {})
+      }).catch(() => console.error('kill failed'))
+      await compose.rm({
+        ...opts,
+        log: false,
+      }).catch(() => console.error('rm failed'))
       process.exit(0)
     }
 
