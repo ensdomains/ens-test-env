@@ -69,7 +69,7 @@ program
   .command('start')
   .description('Starts the test environment')
   .addOption(new Option('--no-reset', "Don't reset the data folder"))
-  .addOption(new Option('--exit-after-deploy', 'Exit after contract deployment'))
+  .option('--exit-after-deploy', 'Exit after contract deployment')
   .option('--debug', 'Enable debug logging')
   .addOption(
     new Option('-s, --save', 'Save data when exiting').implies({
