@@ -251,6 +251,11 @@ export const main = async (_config, _options, justKill) => {
     // remove block timestamp interval after deploy
     await rpcFetch('anvil_removeBlockTimestampInterval', [])
 
+    if (options.exitAfterDeploy) {
+      console.log('\x1b[1;34m[config]\x1b[0m ', 'Exiting after contract deployment...')
+      return cleanup(undefined, 0)
+    }
+
     if (options.extraTime) {
       // snapshot before setting current time
       await rpcFetch('evm_snapshot', [])
