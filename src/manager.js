@@ -253,8 +253,11 @@ export const main = async (_config, _options, justKill) => {
 
     if (options.exitAfterDeploy) {
       console.log('\x1b[1;34m[config]\x1b[0m ', 'Exiting after contract deployment...')
-      // Force immediate exit after deployment
-      process.kill(process.pid, 'SIGTERM')
+      const compose = await getCompose()
+      await compose.kill()
+      await compose.rm()
+      await compose.down()
+      process.exit(0)
     }
 
     if (options.extraTime) {
