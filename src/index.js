@@ -69,7 +69,7 @@ program
   .command('start')
   .description('Starts the test environment')
   .addOption(new Option('--no-reset', "Don't reset the data folder"))
-  .addOption(new Option('--exit-after-deploy', 'Exit after contract deployment'))
+  .addOption(new Option('--exit-after-deploy', 'Exit after contract deployment').default(false))
   .addOption(
     new Option('-s, --save', 'Save data when exiting').implies({
       killGracefully: true,
@@ -95,7 +95,11 @@ program
     } else if (options.reset) {
       await fetchData('load', config)
     }
-    manager(config, options)
+    const managerOptions = {
+      ...options,
+      exitAfterDeploy: options.exitAfterDeploy || false
+    }
+    manager(config, managerOptions)
   })
 
 program
