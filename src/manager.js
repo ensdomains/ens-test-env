@@ -253,8 +253,12 @@ export const main = async (_config, _options, justKill) => {
 
     if (options.exitAfterDeploy) {
       console.log('\x1b[1;34m[config]\x1b[0m ', 'Exiting after contract deployment...')
-      await cleanup(undefined, 0)
-      return
+      const compose = await getCompose()
+      await compose.down({
+        ...opts,
+        log: false,
+      }).catch(() => {})
+      process.exit(0)
     }
 
     if (options.extraTime) {
