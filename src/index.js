@@ -96,14 +96,12 @@ program
     } else if (options.reset) {
       await fetchData('load', config)
     }
+    console.log('\x1b[1;34m[config]\x1b[0m ', 'CLI options:', options)
     const managerOptions = {
       ...options,
       exitAfterDeploy: Boolean(options.exitAfterDeploy)
     }
-    if (options.debug) {
-      console.log('[debug] Raw options:', options)
-      console.log('[debug] Manager options:', managerOptions)
-    }
+    console.log('\x1b[1;34m[config]\x1b[0m ', 'Manager options:', managerOptions)
     manager(config, managerOptions)
   })
 
