@@ -25,7 +25,8 @@
 				"noAccumulatingSpread": "off"
 			},
 			"suspicious": {
-				"noAssignInExpressions": "off"
+				"noAssignInExpressions": "off",
+				"noExplicitAny": "warn"
 			}
 		}
 	},

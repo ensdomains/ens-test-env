@@ -11,6 +11,9 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@ensdomains/address-encoder": "^1.1.2",
+    "@ensdomains/content-hash": "^3.0.0",
+    "@ensdomains/ens-contracts": "1.4.0",
     "cli-progress": "^3.10.0",
     "commander": "^13.1.0",
     "concurrently": "^9.1.2",
@@ -24,11 +27,25 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@ensdomains/hardhat-toolbox-viem-extended": "^0.0.5",
+    "@nomicfoundation/hardhat-viem": "^2.0.6",
     "@types/js-yaml": "^4.0.9",
+    "cbor": "^10.0.3",
+    "hardhat": "^2.24.0",
+    "hardhat-deploy": "^1.0.2",
     "ts-node": "^10.7.0",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.2",
+    "viem": "^2.29.1"
   },
   "preferUnplugged": true,
   "bin": "./src/index.js",
-  "packageManager": "pnpm@9.4.0+sha512.f549b8a52c9d2b8536762f99c0722205efc5af913e77835dbccc3b0b0b2ca9e7dc8022b78062c17291c48e88749c70ce88eb5a74f1fa8c4bf5e18bb46c8bd83a"
+  "packageManager": "pnpm@10.10.0",
+  "peerDependencies": {
+    "@ensdomains/hardhat-toolbox-viem-extended": "^0.0.5",
+    "@nomicfoundation/hardhat-viem": "^2.0.6",
+    "cbor": "^10.0.3",
+    "hardhat": "^2.24.0",
+    "hardhat-deploy": "^1.0.2",
+    "viem": "^2.29.1"
+  }
 }
