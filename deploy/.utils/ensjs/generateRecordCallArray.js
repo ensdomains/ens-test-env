@@ -1,7 +1,4 @@
 import {
-  type Address,
-  type Hex,
-  type Prettify,
   bytesToHex,
   encodeFunctionData,
   zeroAddress,
@@ -17,18 +14,21 @@ import {
 } from './contracts.js'
 
 export type EncodeSetTextParameters = {
-  namehash: Hex
+  namehash: import('viem').Hex
   key: string
   value: string | null
 }
 
-export type EncodeSetTextReturnType = Hex
-
+/**
+ * 
+ * @param {EncodeSetAbiParameters} param0 
+ * @returns {import('viem').Hex}
+ */
 export const encodeSetText = ({
   namehash,
   key,
   value,
-}: EncodeSetTextParameters): EncodeSetTextReturnType => {
+}: EncodeSetTextParameters) => {
   return encodeFunctionData({
     abi: publicResolverSetTextSnippet,
     functionName: 'setText',
@@ -39,16 +39,16 @@ export const encodeSetText = ({
 type AbiContentType = 1 | 2 | 4 | 8
 export type EncodedAbi<TContentType extends AbiContentType = AbiContentType> = {
   contentType: TContentType
-  encodedData: Hex
+  encodedData: import('viem').Hex
 }
 
 export type EncodeSetAddrParameters = {
-  namehash: Hex
+  namehash: import('viem').Hex
   coin: string | number
-  value: Address | string | null
+  value: import('hardhat-deploy/types.js').Address | string | null
 }
 
-export type RecordOptions = Prettify<{
+export type RecordOptions = import('viem').Prettify<{
   /** Clears all current records */
   clearRecords?: boolean
   /** ContentHash value */
@@ -61,23 +61,29 @@ export type RecordOptions = Prettify<{
   abi?: EncodedAbi | EncodedAbi[]
 }>
 
-export const encodeClearRecords = (namehash: Hex) =>
+export const encodeClearRecords = (namehash: import('viem').Hex) =>
   encodeFunctionData({
     abi: publicResolverClearRecordsSnippet,
     functionName: 'clearRecords',
     args: [namehash],
   })
 
-export type EncodeSetAddrReturnType = Hex
-
+/**
+ * 
+ * @param {EncodeSetAddrParameters} param0 
+ * @returns {import('viem').Hex}
+ */
 export const encodeSetAddr = ({
   namehash,
   coin,
   value,
-}: EncodeSetAddrParameters): EncodeSetAddrReturnType => {
+ }) => {
   const coder = getCoderFromCoin(coin)
   const inputCoinType = coder.coinType
-  let encodedAddress: Hex | Uint8Array = value ? coder.decode(value) : '0x'
+  /**
+   * @type { import('viem').Hex | Uint8Array}
+   */
+  let encodedAddress = value ? coder.decode(value) : '0x'
   if (inputCoinType === 60 && encodedAddress === '0x')
     encodedAddress = coder.decode(zeroAddress)
   if (typeof encodedAddress !== 'string') {
@@ -91,17 +97,16 @@ export const encodeSetAddr = ({
   })
 }
 
-export type EncodeSetAbiParameters = {
-  namehash: Hex
-} & EncodedAbi
-
-export type EncodeSetAbiReturnType = Hex
-
+/**
+ * 
+ * @param {{ namehash: import('viem').Hex} & EncodedAbi} param0 
+ * @returns {import('viem').Hex}
+ */
 export const encodeSetAbi = ({
   namehash,
   contentType,
   encodedData,
-}: EncodeSetAbiParameters): EncodeSetAbiReturnType => {
+}) => {
   return encodeFunctionData({
     abi: publicResolverSetAbiSnippet,
     functionName: 'setABI',
@@ -109,18 +114,19 @@ export const encodeSetAbi = ({
   })
 }
 
-export type EncodeSetContentHashParameters = {
-  namehash: Hex
-  contentHash: string | null
-}
-
-export type EncodeSetContentHashReturnType = Hex
-
+/**
+ * 
+ * @param {{namehash: import('viem').Hex; contentHash: string | null}} param0 
+ * @returns {import('viem').Hex}
+ */
 export const encodeSetContentHash = ({
   namehash,
   contentHash,
-}: EncodeSetContentHashParameters): EncodeSetContentHashReturnType => {
-  let encodedHash: Hex = '0x'
+}) => {
+  /**
+   * @type {import('viem').Hex}
+   */
+  let encodedHash = '0x'
   if (contentHash) {
     encodedHash = encodeContentHash(contentHash)
   }
@@ -130,7 +136,11 @@ export const encodeSetContentHash = ({
     args: [namehash, encodedHash],
   })
 }
-
+/**
+ * 
+ * @param {{ namehash: import('viem').Hex } & RecordOptions} param0 
+ * @returns {import('viem').Hex[]}
+ */
 export const generateRecordCallArray = ({
   namehash,
   clearRecords,
@@ -138,8 +148,11 @@ export const generateRecordCallArray = ({
   texts,
   coins,
   abi,
-}: { namehash: Hex } & RecordOptions): Hex[] => {
-  const calls: Hex[] = []
+}) => {
+  /**
+   * @type {import('viem').Hex[]}
+   */
+  const calls = []
 
   if (clearRecords) {
     calls.push(encodeClearRecords(namehash))
@@ -153,7 +166,7 @@ export const generateRecordCallArray = ({
   if (abi !== undefined) {
     const abis = Array.isArray(abi) ? abi : [abi]
     for (const abi_ of abis) {
-      const data = encodeSetAbi({ namehash, ...abi_ } as EncodeSetAbiParameters)
+      const data = encodeSetAbi({ namehash, ...abi_ })
       if (data) calls.push(data)
     }
   }

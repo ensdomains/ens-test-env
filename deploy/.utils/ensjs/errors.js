@@ -1,4 +1,18 @@
+/**
 
+* @typedef {{
+
+  *   metaMessages?: string[]
+
+  * } & (
+  
+  *   | { cause?: undefined, details?: string }
+  
+  *   | { cause: BaseError | Error, details?: undefined }
+  
+  * )} BaseErrorParameters
+  
+  */
 
 export class BaseError extends Error {
   /**

@@ -8,6 +8,12 @@ import { InvalidContentHashError } from './errors.js'
 
 
 /**
+ * Supported protocol identifiers or `null`.
+ * @typedef {'ipfs' | 'ipns' | 'bzz' | 'onion' | 'onion3' | 'sia' | 'ar' | null} ProtocolType
+ */
+
+
+/**
  * 
  * @param {string} text 
  * @returns 
@@ -67,7 +73,7 @@ export const getInternalCodec = (
 /**
  * 
  * @param {import('viem').Hex} encoded 
- * @returns {import('./contentHash.js').DecodedContentHash | null}
+ * @returns {{  protocolType: ProtocolType; decoded: string}} | null}
  */
 export function decodeContentHash(encoded) {
   if (!encoded || encoded === '0x') {
