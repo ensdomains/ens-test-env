@@ -1,34 +1,40 @@
-type BaseErrorParameters = {
-  metaMessages?: string[]
-} & (
-  | {
-      cause?: never
-      details?: string
-    }
-  | {
-      cause: BaseError | Error
-      details?: never
-    }
-)
+
 
 export class BaseError extends Error {
-  details: string
+  /**
+   * @type {string}
+   */
+  details
 
-  metaMessages?: string[]
+  /**
+   * @type {string[] | undefined}
+   */
+  metaMessages
 
-  shortMessage: string
+  /**
+   * @type {string}
+   */
+  shortMessage
 
-  override name = 'EnsJsError'
+  name = 'EnsJsError'
 
-  cause: BaseError | Error
+  /**
+   * @type {BaseError | Error}
+   */
+  cause
 
-  constructor(shortMesage: string, args: BaseErrorParameters = {}) {
+  /**
+   * 
+   * @param {string} shortMesage 
+   * @param {import('./errors.js').BaseErrorParameters} args 
+   */
+  constructor(shortMesage, args = {}) {
     super()
 
     const details =
       args.cause instanceof BaseError
         ? args.cause.details
-        : (args.cause?.message ?? args.details!)
+        : (args.cause?.message ?? args.details)
 
     this.message = [
       shortMesage || 'An error occurred',
@@ -47,16 +53,20 @@ export class BaseError extends Error {
 export class FusesOutOfRangeError extends BaseError {
   name = 'FusesOutOfRangeError'
 
+  /**
+   * 
+   * @param {{
+    fuses: bigint
+    minimum?: bigint
+    maximum?: bigint
+    details?: string
+  }} param0 
+   */
   constructor({
     fuses,
     minimum = 0n,
     maximum = 2n ** 32n,
     details,
-  }: {
-    fuses: bigint
-    minimum?: bigint
-    maximum?: bigint
-    details?: string
   }) {
     super('Fuse value out of range', {
       metaMessages: [
@@ -71,12 +81,16 @@ export class FusesOutOfRangeError extends BaseError {
 export class FusesRestrictionNotAllowedError extends BaseError {
   name = 'FusesRestrictionNotAllowed'
 
+  /**
+   * 
+   * @param {{
+    fuses: object | bigint
+    details?: string
+  }} param0 
+   */
   constructor({
     fuses,
     details,
-  }: {
-    fuses: object | bigint
-    details?: string
   }) {
     super('Restriction not allowed', {
       metaMessages: [`- Fuse value: ${fuses}`],
@@ -88,7 +102,11 @@ export class FusesRestrictionNotAllowedError extends BaseError {
 export class FusesInvalidFuseObjectError extends BaseError {
   name = 'FusesInvalidFuseObjectError'
 
-  constructor({ fuses, details }: { fuses: object; details?: string }) {
+  /**
+   * 
+   * @param {{ fuses: object; details?: string }} param0 
+   */
+  constructor({ fuses, details }) {
     super('Invalid fuse value', {
       metaMessages: [`- Fuse value: ${fuses}`],
       details,
@@ -107,7 +125,11 @@ export class FusesValueRequiredError extends BaseError {
 export class FusesInvalidNamedFuseError extends BaseError {
   name = 'FusesInvalidNamedFuseError'
 
-  constructor({ fuse }: { fuse: string }) {
+  /**
+   * 
+   * @param {{ fuse: string }} param0 
+   */
+  constructor({ fuse }) {
     super(`${fuse} is not a valid named fuse`)
   }
 }
@@ -115,7 +137,11 @@ export class FusesInvalidNamedFuseError extends BaseError {
 export class FusesFuseNotAllowedError extends BaseError {
   name = 'FusesFuseNotAllowedError'
 
-  constructor({ fuse }: { fuse: string | bigint }) {
+  /**
+   * 
+   * @param {{ fuse: string | bigint }} param0 
+   */
+  constructor({ fuse }) {
     super(`${fuse} is not allowed for this operation`)
   }
 }
@@ -123,7 +149,11 @@ export class FusesFuseNotAllowedError extends BaseError {
 export class FusesInvalidUnnamedFuseError extends BaseError {
   name = 'FusesInvalidUnnamedFuseError'
 
-  constructor({ fuse }: { fuse: unknown }) {
+  /**
+   * 
+   * @param {{ fuse: unknown }} param0 
+   */
+  constructor({ fuse }) {
     super(`${fuse} is not a valid unnamed fuse`, {
       metaMessages: [
         '- If you are trying to set a named fuse, use the named property',
@@ -132,21 +162,14 @@ export class FusesInvalidUnnamedFuseError extends BaseError {
   }
 }
 
-export class InvalidEncodedLabelError extends BaseError {
-  name = 'InvalidEncodedLabelError'
-
-  constructor({ label, details }: { label: string; details?: string }) {
-    super('Invalid encoded label', {
-      metaMessages: [`- Supplied label: ${label}`],
-      details,
-    })
-  }
-}
-
 export class InvalidLabelhashError extends BaseError {
   name = 'InvalidLabelhashError'
 
-  constructor({ labelhash, details }: { labelhash: string; details?: string }) {
+  /**
+   * 
+   * @param {{ labelhash: string; details?: string }} param0 
+   */
+  constructor({ labelhash, details }) {
     super('Invalid labelhash', {
       metaMessages: [`- Supplied labelhash: ${labelhash}`],
       details,
@@ -154,45 +177,14 @@ export class InvalidLabelhashError extends BaseError {
   }
 }
 
-export class NameWithEmptyLabelsError extends BaseError {
-  name = 'NameWithEmptyLabelsError'
-
-  constructor({ name, details }: { name: string; details?: string }) {
-    super('Name cannot have empty labels', {
-      metaMessages: [`- Supplied name: ${name}`],
-      details,
-    })
-  }
-}
-
-export class RootNameIncludesOtherLabelsError extends BaseError {
-  name = 'RootNameIncludesOtherLabelsError'
-
-  constructor({ name }: { name: string }) {
-    super('Root name cannot have other labels', {
-      metaMessages: [`- Supplied name: ${name}`],
-    })
-  }
-}
-
-export class WrappedLabelTooLargeError extends BaseError {
-  name = 'WrappedLabelTooLargeError'
-
-  constructor({ label, byteLength }: { label: string; byteLength: number }) {
-    super('Supplied label was too long', {
-      metaMessages: [
-        `- Supplied label: ${label}`,
-        '- Max byte length: 255',
-        `- Actual byte length: ${byteLength}`,
-      ],
-    })
-  }
-}
-
 export class CampaignReferenceTooLargeError extends BaseError {
   name = 'CampaignReferenceTooLargeError'
 
-  constructor({ campaign }: { campaign: number }) {
+  /**
+   * 
+   * @param {{ campaign: number }} param0 
+   */
+  constructor({ campaign }) {
     super(`Campaign reference ${campaign} is too large`, {
       metaMessages: [`- Max campaign reference: ${0xffffffff}`],
     })
@@ -207,18 +199,14 @@ export class InvalidContentHashError extends BaseError {
   }
 }
 
-export class UnknownContentTypeError extends BaseError {
-  name = 'UnknownContentTypeError'
-
-  constructor({ contentType }: { contentType: string }) {
-    super(`Unknown content type: ${contentType}`)
-  }
-}
-
 export class ResolverAddressRequiredError extends BaseError {
   name = 'ResolverAddressRequiredError'
 
-  constructor({ data }: { data: object }) {
+  /**
+   * 
+   * @param {{ data: object }} param0
+   */
+  constructor({ data }) {
     super('Resolver address is required when data is supplied', {
       metaMessages: [
         'Supplied data:',
@@ -229,11 +217,18 @@ export class ResolverAddressRequiredError extends BaseError {
 }
 
 export class CoinFormatterNotFoundError extends BaseError {
-  coinType: string | number
+  /**
+   * @type {string | number}
+   */
+  coinType
 
-  override name = 'CoinFormatterNotFoundError'
+  name = 'CoinFormatterNotFoundError'
 
-  constructor({ coinType }: { coinType: string | number }) {
+  /**
+   * 
+   * @param {{ coinType: string | number }} param0
+   */
+  constructor({ coinType }) {
     super(`Coin formatter not found for ${coinType}`)
     this.coinType = coinType
   }

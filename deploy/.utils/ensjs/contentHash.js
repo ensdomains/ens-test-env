@@ -1,28 +1,18 @@
 import {
-  type Codec as InternalCodec,
   decode,
   encode,
   getCodec,
 } from '@ensdomains/content-hash'
-import { type Hex, isHex } from 'viem'
-import { InvalidContentHashError } from './errors'
+import {  isHex } from 'viem'
+import { InvalidContentHashError } from './errors.js'
 
-export type ProtocolType =
-  | 'ipfs'
-  | 'ipns'
-  | 'bzz'
-  | 'onion'
-  | 'onion3'
-  | 'sia'
-  | 'ar'
-  | null
 
-export type DecodedContentHash = {
-  protocolType: ProtocolType
-  decoded: string
-}
-
-function matchProtocol(text: string) {
+/**
+ * 
+ * @param {string} text 
+ * @returns 
+ */
+function matchProtocol(text) {
   return (
     text.match(/^(ipfs|sia|ipns|bzz|onion|onion3|arweave|ar):\/\/(.*)/) ||
     text.match(/\/(ipfs)\/(.*)/) ||
@@ -30,7 +20,12 @@ function matchProtocol(text: string) {
   )
 }
 
-export const getDisplayCodec = (encoded: string): ProtocolType => {
+/**
+ * 
+ * @param {string} encoded 
+ * @returns {import('./contentHash.js').ProtocolType}
+ */
+export const getDisplayCodec = (encoded) => {
   const codec = getCodec(encoded)
   switch (codec) {
     case 'ipfs':
@@ -49,9 +44,14 @@ export const getDisplayCodec = (encoded: string): ProtocolType => {
   }
 }
 
+/**
+ * 
+ * @param {NonNullable<import('./contentHash.js').ProtocolType>} displayCodec 
+ * @returns {import('@ensdomains/content-hash').Codec}
+ */
 export const getInternalCodec = (
-  displayCodec: NonNullable<ProtocolType>,
-): InternalCodec => {
+  displayCodec,
+) => {
   switch (displayCodec) {
     case 'bzz':
       return 'swarm'
@@ -64,7 +64,12 @@ export const getInternalCodec = (
   }
 }
 
-export function decodeContentHash(encoded: Hex): DecodedContentHash | null {
+/**
+ * 
+ * @param {import('viem').Hex} encoded 
+ * @returns {import('./contentHash.js').DecodedContentHash | null}
+ */
+export function decodeContentHash(encoded) {
   if (!encoded || encoded === '0x') {
     return null
   }
@@ -73,20 +78,36 @@ export function decodeContentHash(encoded: Hex): DecodedContentHash | null {
   return { protocolType, decoded }
 }
 
-export function isValidContentHash(encoded: unknown) {
+/**
+ * 
+ * @param {unknown} encoded 
+ * @returns {boolean}
+ */
+export function isValidContentHash(encoded) {
   if (typeof encoded !== 'string') return false
   const codec = getCodec(encoded)
   return Boolean(codec && isHex(encoded))
 }
 
-export function getProtocolType(encoded: string) {
+/**
+ * 
+ * @param {string} encoded 
+ * @returns {{ protocolType: import('./contentHash.js').ProtocolType, decoded: string }} | null
+ */
+export function getProtocolType(encoded) {
   const matched = matchProtocol(encoded)
   if (!matched) return null
+
   const [, protocolType, decoded] = matched
-  return { protocolType: protocolType as NonNullable<ProtocolType>, decoded }
+  return { protocolType: /** @type {import('./contentHash.js').ProtocolType} */ (protocolType), decoded }
 }
 
-export function encodeContentHash(text: string): Hex {
+/**
+ * 
+ * @param {string} text 
+ * @returns {import('viem').Hex}
+ */
+export function encodeContentHash(text) {
   const typeData = getProtocolType(text)
   if (!typeData) throw new InvalidContentHashError()
 

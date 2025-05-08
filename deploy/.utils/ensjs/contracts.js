@@ -12,7 +12,7 @@ export const publicResolverClearRecordsSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] as const
+] 
 
 export const publicResolverSetTextSnippet = [
   {
@@ -35,7 +35,7 @@ export const publicResolverSetTextSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] as const
+] 
 
 export const publicResolverSetAddrSnippet = [
   {
@@ -58,7 +58,7 @@ export const publicResolverSetAddrSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] as const
+]
 
 export const publicResolverSetAbiSnippet = [
   {
@@ -81,7 +81,7 @@ export const publicResolverSetAbiSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] as const
+]
 
 export const publicResolverSetContenthashSnippet = [
   {
@@ -100,4 +100,4 @@ export const publicResolverSetContenthashSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] as const
+]
