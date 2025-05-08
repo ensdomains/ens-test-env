@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  hardhat-deploy@0.12.4:
+    hash: 2f096aa3a9c613df141fcc353a505c2742a3f0363a2c2839106e47dabc388e2f
+    path: patches/hardhat-deploy@0.12.4.patch
+
 importers:
 
   .:
@@ -53,7 +58,7 @@ importers:
         version: 1.9.4
       '@ensdomains/hardhat-toolbox-viem-extended':
         specifier: ^0.0.5
-        version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)(viem@2.29.1(typescript@5.6.2)))(hardhat-deploy@1.0.2)(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)
+        version: 0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)(viem@2.29.1(typescript@5.6.2)))(hardhat-deploy@0.12.4(patch_hash=2f096aa3a9c613df141fcc353a505c2742a3f0363a2c2839106e47dabc388e2f))(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)
       '@nomicfoundation/hardhat-viem':
         specifier: ^2.0.6
         version: 2.0.6(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)(viem@2.29.1(typescript@5.6.2))
@@ -67,8 +72,8 @@ importers:
         specifier: ^2.24.0
         version: 2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2)
       hardhat-deploy:
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^0.12.4
+        version: 0.12.4(patch_hash=2f096aa3a9c613df141fcc353a505c2742a3f0363a2c2839106e47dabc388e2f)
       ts-node:
         specifier: ^10.7.0
         version: 10.9.2(@types/node@22.13.1)(typescript@5.6.2)
@@ -897,8 +902,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  hardhat-deploy@1.0.2:
-    resolution: {integrity: sha512-FCeoGpYLQiGjROURihth6Qye+GWvRqalGbRsCTW33canhAS4g6mJEILbkWbWF8P2cPWgcpxe3cCJksk6n+oD7Q==}
+  hardhat-deploy@0.12.4:
+    resolution: {integrity: sha512-bYO8DIyeGxZWlhnMoCBon9HNZb6ji0jQn7ngP1t5UmGhC8rQYhji7B73qETMOFhzt5ECZPr+U52duj3nubsqdQ==}
 
   hardhat@2.24.0:
     resolution: {integrity: sha512-wDkD5GPmttYv21MR7tGDkyQ22tO2V86OEV8pA7NcXWYUpibe8XZ2EanXCeRHO61vwEx0f7/M+NqrhJwasaNMJg==}
@@ -1568,11 +1573,11 @@ snapshots:
       '@openzeppelin/contracts': 4.9.6
       dns-packet: 5.6.1
 
-  '@ensdomains/hardhat-toolbox-viem-extended@0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)(viem@2.29.1(typescript@5.6.2)))(hardhat-deploy@1.0.2)(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)':
+  '@ensdomains/hardhat-toolbox-viem-extended@0.0.5(@nomicfoundation/hardhat-viem@2.0.6(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)(viem@2.29.1(typescript@5.6.2)))(hardhat-deploy@0.12.4(patch_hash=2f096aa3a9c613df141fcc353a505c2742a3f0363a2c2839106e47dabc388e2f))(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)':
     dependencies:
       '@nomicfoundation/hardhat-viem': 2.0.6(hardhat@2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2))(typescript@5.6.2)(viem@2.29.1(typescript@5.6.2))
       hardhat: 2.24.0(ts-node@10.9.2(@types/node@22.13.1)(typescript@5.6.2))(typescript@5.6.2)
-      hardhat-deploy: 1.0.2
+      hardhat-deploy: 0.12.4(patch_hash=2f096aa3a9c613df141fcc353a505c2742a3f0363a2c2839106e47dabc388e2f)
       typescript: 5.6.2
 
   '@ensdomains/solsha1@0.0.3':
@@ -2500,7 +2505,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  hardhat-deploy@1.0.2:
+  hardhat-deploy@0.12.4(patch_hash=2f096aa3a9c613df141fcc353a505c2742a3f0363a2c2839106e47dabc388e2f):
     dependencies:
       '@ethersproject/abi': 5.8.0
       '@ethersproject/abstract-signer': 5.8.0
