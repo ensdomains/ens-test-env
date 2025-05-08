@@ -1,10 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import fs from 'node:fs/promises'
 import { resolve } from 'node:path'
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ */
+const func = async (hre) => {
   const { getNamedAccounts, deployments, viem } = hre
   const allNamedAccts = await getNamedAccounts()
   const { deployer } = allNamedAccts

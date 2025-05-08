@@ -1,16 +1,19 @@
-/* eslint-disable import/no-extraneous-dependencies, import/extensions */
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
+
 import { labelhash, namehash, zeroHash } from 'viem'
 
 const names = ['legacy']
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ * @returns {Promise<boolean>}
+ */
+const func = async (hre) => {
   const { viem } = hre
   const { owner } = await viem.getNamedClients()
 
   const registry = await viem.getContract(
-    'LegacyENSRegistry' as 'ENSRegistry',
+    'LegacyENSRegistry',
     owner,
   )
 
@@ -36,12 +39,17 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 func.id = 'legacy-registry-names'
 func.tags = ['legacy-registry-names']
 func.dependencies = ['ENSRegistry']
-func.skip = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * 
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ * @returns 
+ */
+func.skip = async (hre) => {
   const { viem } = hre
   const { owner } = await viem.getNamedClients()
 
   const registry = await viem.getContract(
-    'LegacyENSRegistry' as 'ENSRegistry',
+    'LegacyENSRegistry',
     owner,
   )
 

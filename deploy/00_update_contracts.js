@@ -1,8 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
-
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ */
+const func = async (hre) => {
   const { viem } = hre
   const { deployer } = await viem.getNamedClients()
 

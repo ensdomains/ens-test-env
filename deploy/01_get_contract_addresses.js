@@ -3,11 +3,13 @@ import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
 import { getAddress } from 'viem'
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ */
+const func = async (hre) => {
   const allDeployments = await hre.deployments.all()
   const deploymentAddressArray = [
     ...Object.keys(allDeployments).map((dkey) => [

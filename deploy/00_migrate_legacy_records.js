@@ -1,8 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
-/* eslint-disable no-await-in-loop */
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
 import { namehash } from 'viem'
 
 const names = [
@@ -25,9 +20,13 @@ const names = [
         '0xe301017012204edd2984eeaf3ddf50bac238ec95c5713fb40b5e428b508fdbe55d3b9f155ffe',
     },
   },
-] as const
+]
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ */
+const func = async (hre) => {
   const { network, viem } = hre
   const namedClients = await viem.getNamedClients()
 

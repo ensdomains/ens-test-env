@@ -33,7 +33,6 @@
     "cbor": "^10.0.3",
     "hardhat": "^2.24.0",
     "hardhat-deploy": "^0.12.4",
-    "ts-node": "^10.7.0",
     "typescript": "^5.3.2",
     "viem": "^2.29.1"
   },
@@ -46,11 +45,7 @@
     "cbor": "^10.0.3",
     "hardhat": "^2.24.0",
     "hardhat-deploy": "^0.12.4",
-    "ts-node": "^10.7.0",
     "viem": "^2.29.1"
-  },
-  "scripts": {
-    "hh": "NODE_OPTIONS='--experimental-loader ts-node/esm/transpile-only'  TS_NODE_PROJECT='./tsconfig.hh.json' hardhat"
   },
   "pnpm": {
     "patchedDependencies": {

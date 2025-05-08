@@ -1,17 +1,38 @@
-import type hre from 'hardhat'
+/**
+ * @template T
+ * @typedef {Awaited<ReturnType<import('hardhat')['viem']['getNamedClients']>>} NamedClients
+ */
 
-export const nonceManager =
-  <T extends object>(
-    allNamedClients: Awaited<
-      ReturnType<(typeof hre)['viem']['getNamedClients']>
-    >,
-    allNameData: Array<T>,
+/**
+ * @template T
+ * @typedef {(nonce: number) => (data: T, index: number) => Promise<number>} NonceFunction
+ */
+
+/**
+ * @template T
+ * @typedef {(
+*   allNamedClients: NamedClients<T>,
+*   allNameData: T[]
+* ) => (
+*   property: keyof T,
+*   func: NonceFunction<T>,
+*   filter?: (data: T) => boolean,
+*   nonceMap?: Record<string, number>
+* ) => Promise<Record<string, number>>} NonceManager
+*/
+
+/**
+* @type {<T>(...args: Parameters<NonceManager<T>>) => ReturnType<NonceManager<T>>}
+*/
+export const nonceManager = (
+    allNamedClients,
+    allNameData,
   ) =>
   async (
-    property: keyof T,
-    func: (nonce: number) => (data: T, index: number) => Promise<number>,
-    filter?: (data: T) => boolean,
-    nonceMap?: Record<string, number>,
+    property,
+    func,
+    filter,
+    nonceMap,
   ) => {
     const newNonceMap = nonceMap || {}
     for (const client of Object.values(allNamedClients)) {

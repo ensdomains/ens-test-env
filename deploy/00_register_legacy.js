@@ -2,12 +2,8 @@
 
 /* eslint-disable no-await-in-loop */
 import cbor from 'cbor'
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
 import pako from 'pako'
 import {
-  type Address,
-  type Hash,
   bytesToHex,
   labelhash,
   namehash,
@@ -133,41 +129,11 @@ const dummyABI = [
   },
 ]
 
-type Name = {
-  label: string
-  namedOwner: string
-  namedAddr: string
-  subname?: string
-  namedController?: string
-  resolver?: Address
-  records?: {
-    text?: {
-      key: string
-      value: string
-    }[]
-    addr?: {
-      key: bigint
-      value: Hash
-    }[]
-    contenthash?: Hash
-    abi?:
-      | {
-          contentType: bigint
-          data: any
-        }
-      | {
-          contentType: bigint
-          data: any
-        }[]
-  }
-  subnames?: {
-    label: string
-    namedOwner: string
-  }[]
-  customDuration?: bigint
-}
 
-const names: Name[] = [
+/**
+ * @type {import('./00_register_legacy.d.ts').Name[]}
+ */
+const names = [
   {
     label: 'test123',
     namedOwner: 'owner',
@@ -373,9 +339,12 @@ const names: Name[] = [
       ],
     },
   },
-] as const
-
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+]
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ */
+const func = async (hre) => {
   const { network, viem } = hre
 
   const allNamedClients = await viem.getNamedClients()
@@ -384,7 +353,11 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const registry = await viem.getContract('ENSRegistry')
   const controller = await viem.getContract('LegacyETHRegistrarController')
   const publicResolver = await viem.getContract('LegacyPublicResolver')
-
+/**
+ * 
+ * @param {import('./00_register_legacy.js').Name} param0 
+ * @returns 
+ */
   const makeData = ({
     namedOwner,
     namedController,
@@ -392,7 +365,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     customDuration,
     subnames,
     ...rest
-  }: Name) => {
+  }) => {
     // eslint-disable-next-line no-restricted-syntax
     const secret =
       '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -413,11 +386,16 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       resolver,
       duration,
       subnames,
-    } as const
+    }
   }
 
+  /**
+   * 
+   * @param {number} nonce 
+   * @returns 
+   */
   const makeCommitment =
-    (nonce: number) =>
+    (nonce) =>
     async (
       {
         label,
@@ -425,8 +403,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
         secret,
         resolver,
         addr,
-      }: ReturnType<typeof makeData>,
-      index: number,
+      },
+      index,
     ) => {
       const commitment = await controller.read.makeCommitmentWithConfig([
         label,
@@ -447,8 +425,13 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       return 1
     }
 
+  /**
+   * 
+   * @param {number} nonce 
+   * @returns 
+   */
   const makeRegistration =
-    (nonce: number) =>
+    (nonce) =>
     async (
       {
         label,
@@ -457,8 +440,8 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
         resolver,
         addr,
         duration,
-      }: ReturnType<typeof makeData>,
-      index: number,
+      },
+      index,
     ) => {
       const price = await controller.read.rentPrice([label, duration])
 
@@ -475,13 +458,18 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       return 1
     }
 
+    /**
+     * 
+     * @param {number} nonce 
+     * @returns 
+     */
   const makeRecords =
-    (nonce: number) =>
+    (nonce) =>
     async (
-      { label, records: _records, registrant }: ReturnType<typeof makeData>,
-      index: number,
+      { label, records: _records, registrant },
+      /** @type {number} */ index,
     ) => {
-      const records = _records!
+      const records = _records
       let nonceRef = nonce + index
 
       const hash = namehash(`${label}.eth`)
@@ -528,7 +516,10 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
         for (const abi of abis) {
           console.log('ABI')
           const { contentType, data } = abi
-          let data_: Uint8Array | undefined
+          /**
+           * @type {Uint8Array | undefined}
+           */
+          let data_
           if (contentType === 1n) data_ = stringToBytes(JSON.stringify(data))
           else if (contentType === 2n)
             data_ = pako.deflate(JSON.stringify(abi.data))
@@ -545,11 +536,16 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       return nonceRef - nonce - index
     }
 
+    /**
+     * 
+     * @param {number} nonce 
+     * @returns 
+     */
   const makeSubnames =
-    (nonce: number) =>
+    (nonce) =>
     async (
-      { label, subnames, registrant, resolver }: ReturnType<typeof makeData>,
-      index: number,
+      { label, subnames, registrant, resolver },
+      index,
     ) => {
       if (!subnames) return 0
       for (let i = 0; i < subnames.length; i += 1) {
@@ -574,15 +570,19 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       }
       return subnames.length
     }
-
+/**
+ * 
+ * @param {number} nonce 
+ * @returns 
+ */
   const makeController =
-    (nonce: number) =>
+    (nonce) =>
     async (
-      { label, owner, registrant }: ReturnType<typeof makeData>,
-      index: number,
+      { label, owner, registrant },
+      index,
     ) => {
       const setControllerTxHash = await registry.write.setOwner(
-        [namehash(`${label}.eth`), owner!.address],
+        [namehash(`${label}.eth`), owner.address],
         {
           account: registrant,
           nonce: nonce + index,
@@ -597,11 +597,19 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const allNameData = names.map(makeData)
 
+  /**
+   * 
+   * @param {keyof ReturnType<typeof makeData>} property 
+   * @param {typeof makeCommitment} _func 
+   * @param {((data: ReturnType<typeof makeData>) => boolean)} [filter] 
+   * @param {Record<string, number>} [nonceMap] 
+   * @returns 
+   */
   const getNonceAndApply = async (
-    property: keyof ReturnType<typeof makeData>,
-    _func: typeof makeCommitment,
-    filter?: (data: ReturnType<typeof makeData>) => boolean,
-    nonceMap?: Record<string, number>,
+    property,
+    _func,
+    filter,
+    nonceMap,
   ) => {
     const newNonceMap = nonceMap || {}
     for (const client of Object.values(allNamedClients)) {
@@ -647,17 +655,20 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await network.provider.send('evm_mine')
   const tempNonces = await getNonceAndApply(
     'registrant',
+    // @ts-ignore
     makeRecords,
     (data) => !!data.records,
   )
   const tempNonces2 = await getNonceAndApply(
     'registrant',
+    // @ts-ignore
     makeController,
     (data) => !!data.owner,
     tempNonces,
   )
   await getNonceAndApply(
     'registrant',
+    // @ts-ignore
     makeSubnames,
     (data) => !!data.subnames,
     tempNonces2,

@@ -7,11 +7,12 @@ import 'hardhat-deploy'
 
 import { resolve } from 'node:path'
 
-import type { HardhatUserConfig } from 'hardhat/config.js'
-
 const ensContractsPath = './node_modules/@ensdomains/ens-contracts'
 
-const config: HardhatUserConfig = {
+/**
+ * @type {import('hardhat/types/config.js').HardhatUserConfig}
+ */
+const config = {
   solidity: {
     compilers: [
       {
@@ -31,7 +32,7 @@ const config: HardhatUserConfig = {
       saveDeployments: false,
       chainId: 1337,
       accounts: {
-        mnemonic: process.env.SECRET_WORDS!,
+        mnemonic: process.env.SECRET_WORDS,
       },
       live: false,
       tags: ['test', 'legacy', 'use_root'],
@@ -41,7 +42,7 @@ const config: HardhatUserConfig = {
       url: 'http://localhost:8545',
       chainId: 1337,
       accounts: {
-        mnemonic: process.env.SECRET_WORDS!,
+        mnemonic: process.env.SECRET_WORDS,
       },
       live: false,
       tags: ['test', 'legacy', 'use_root'],
@@ -79,10 +80,5 @@ const config: HardhatUserConfig = {
   },
 }
 
-declare module '@nomicfoundation/hardhat-viem/types.js' {
-  interface Register {
-    config: typeof config
-  }
-}
 
 export default config

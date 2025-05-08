@@ -1,52 +1,21 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-await-in-loop */
-import type { DeployFunction } from 'hardhat-deploy/types.js'
-import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
-import { type Account, type Hex, namehash } from 'viem'
 
+
+import { namehash } from 'viem/ens'
 import { encodeFuses } from './.utils/ensjs/fuses.js'
-import type { RecordOptions } from './.utils/ensjs/generateRecordCallArray.js'
 import {
-  type RegistrationParameters,
   makeCommitment as generateCommitment,
   makeRegistrationTuple,
 } from './.utils/ensjs/registerHelpers.js'
 import { nonceManager } from './.utils/nonceManager.js'
 
-type Name = {
-  name: string
-  namedOwner: string
-  reverseRecord?: boolean
-  records?: RecordOptions
-  fuses?: RegistrationParameters['fuses']
-  customDuration?: number
-  subnames?: {
-    label: string
-    namedOwner: string
-    fuses?: number
-    expiry?: number
-  }[]
-}
-
-type ProcessedSubname = {
-  label: string
-  owner: Account
-  expiry: number
-  fuses: number
-}
-
-type ProcessedNameData = Omit<RegistrationParameters, 'owner'> & {
-  label: string
-  subnames: ProcessedSubname[]
-  resolverAddress: string
-  secret: Hex
-  duration: number
-  owner: Account
-  name: string
-  fuses?: RegistrationParameters['fuses']
-}
-
-const names: Name[] = [
+/** @type {{ readonly parent: { readonly named: readonly ['PARENT_CANNOT_CONTROL'] } }} */
+const parentPcc = { parent: { named: ['PARENT_CANNOT_CONTROL'] } }
+/**
+ * @type {import('./00_register_wrapped.js').Name[]}
+ */
+const names = [
   {
     name: 'wrapped.eth',
     namedOwner: 'owner',
@@ -70,7 +39,7 @@ const names: Name[] = [
         // set expiry to 24 hours ago
         expiry: Math.floor(Date.now() / 1000) - 86400,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input: parentPcc,
         }),
       },
       {
@@ -79,7 +48,7 @@ const names: Name[] = [
         // set expiry to 24 hours ago
         expiry: Math.floor(Date.now() / 1000) - 3600,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input: parentPcc,
         }),
       },
       {
@@ -87,7 +56,7 @@ const names: Name[] = [
         namedOwner: 'owner',
         expiry: Math.floor(Date.now() / 1000) - 120,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input: parentPcc,
         }),
       },
       {
@@ -95,7 +64,7 @@ const names: Name[] = [
         namedOwner: 'owner',
         expiry: Math.floor(Date.now() / 1000) + 120,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input: parentPcc,
         }),
       },
       {
@@ -104,7 +73,7 @@ const names: Name[] = [
         // set expiry to 24 hours ago
         expiry: Math.floor(Date.now() / 1000) + 3600,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input:parentPcc,
         }),
       },
       {
@@ -116,7 +85,7 @@ const names: Name[] = [
         label: 'not-expired',
         namedOwner: 'owner',
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input:parentPcc,
         }),
       },
     ],
@@ -142,7 +111,7 @@ const names: Name[] = [
         namedOwner: 'deployer',
         expiry: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input:parentPcc,
         }),
       },
       {
@@ -150,7 +119,7 @@ const names: Name[] = [
         namedOwner: 'owner',
         expiry: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input:parentPcc,
         }),
       },
       {
@@ -158,14 +127,18 @@ const names: Name[] = [
         namedOwner: 'deployer',
         expiry: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
+          input:parentPcc,
         }),
       },
     ],
   },
 ]
 
-const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
+/**
+ * @type {import('hardhat-deploy/types.js').DeployFunction}
+ * @param {import('hardhat/types/runtime.js').HardhatRuntimeEnvironment} hre 
+ */
+const func = async (hre) => {
   const { network, viem } = hre
   const allNamedClients = await viem.getNamedClients()
   const publicClient = await viem.getPublicClient()
@@ -174,6 +147,11 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const publicResolver = await viem.getContract('PublicResolver')
   const nameWrapper = await viem.getContract('NameWrapper')
 
+  /**
+   * 
+   * @param {import('./00_register_wrapped.js').Name} param0 
+   * @returns 
+   */
   const makeData = ({
     namedOwner,
     customDuration,
@@ -181,16 +159,22 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     name,
     subnames,
     ...rest
-  }: Name) => {
+  }) => {
     const resolverAddress = publicResolver.address
+    /**
+     * @type {import('viem').Hex}
+     */
     const secret =
-      '0x0000000000000000000000000000000000000000000000000000000000000000' as const
+      '0x0000000000000000000000000000000000000000000000000000000000000000'
     const duration = customDuration || 31536000
     // 1659467455 is an approximate base timestamp; adding duration to it gives the wrapper expiry
     const wrapperExpiry = 1659467455 + duration
     const owner = allNamedClients[namedOwner].account
 
-    const processedSubnames: ProcessedSubname[] =
+    /**
+     * @type {import('./00_register_wrapped.js').ProcessedSubname[]}
+     */
+    const processedSubnames =
       subnames?.map(
         ({
           label,
@@ -218,9 +202,19 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     }
   }
 
+  /**
+   * 
+   * @param {number} nonce 
+   */
   const makeCommitment =
-    (nonce: number) =>
-    async ({ owner, name, ...rest }: ProcessedNameData, index: number) => {
+    (nonce) =>
+      /**
+       * 
+       * @param {import('./00_register_wrapped.js').ProcessedNameData} param0 
+       * @param {number} index 
+       * @returns 
+       */
+    async ({ owner, name, ...rest }, index) => {
       const commitment = generateCommitment({
         owner: owner.address,
         name,
@@ -233,12 +227,21 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       console.log(`Commiting commitment for ${name} (tx: ${commitTxHash})...`)
       return 1
     }
-
+/**
+ * 
+ * @param {number} nonce 
+ */
   const makeRegistration =
-    (nonce: number) =>
+    (nonce) =>
+          /**
+       * 
+       * @param {import('./00_register_wrapped.js').ProcessedNameData} param0 
+       * @param {number} index 
+       * @returns 
+       */
     async (
-      { owner, name, duration, label, ...rest }: ProcessedNameData,
-      index: number,
+      { owner, name, duration, label, ...rest },
+      index,
     ) => {
       const { base: price } = await controller.read.rentPrice([
         label,
@@ -261,9 +264,19 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
       return 1
     }
 
+    /**
+     * 
+     * @param {number} nonce 
+     */
   const makeSubname =
-    (nonce: number) =>
-    async ({ name, subnames, owner }: ProcessedNameData, index: number) => {
+    (nonce) =>
+          /**
+       * 
+       * @param {import('./00_register_wrapped.js').ProcessedNameData} param0 
+       * @param {number} index 
+       * @returns 
+       */
+    async ({ name, subnames, owner }, index) => {
       for (let i = 0; i < subnames.length; i += 1) {
         const { label, owner: subOwner, fuses, expiry } = subnames[i]
         const subnameTxHash = await nameWrapper.write.setSubnodeOwner(
