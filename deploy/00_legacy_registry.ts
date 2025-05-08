@@ -1,10 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies, import/extensions */
 import type { DeployFunction } from 'hardhat-deploy/types.js'
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
-import { labelhash, namehash } from 'viem'
-
-const ZERO_HASH =
-  '0x0000000000000000000000000000000000000000000000000000000000000000'
+import { labelhash, namehash, zeroHash } from 'viem'
 
 const names = ['legacy']
 
@@ -18,7 +15,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   )
 
   const tldTx = await registry.write.setSubnodeOwner(
-    [ZERO_HASH, labelhash('test'), owner.address],
+    [zeroHash, labelhash('test'), owner.address],
     { chain: owner.public.chain, account: owner.account },
   )
   console.log(`Creating .test TLD (tx: ${tldTx})...`)

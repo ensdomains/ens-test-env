@@ -2,15 +2,15 @@
 /* eslint-disable no-await-in-loop */
 import type { DeployFunction } from 'hardhat-deploy/types.js'
 import type { HardhatRuntimeEnvironment } from 'hardhat/types/runtime.js'
-import { type Account, namehash } from 'viem'
+import { type Account, type Hex, namehash } from 'viem'
 
+import { encodeFuses } from './.utils/ensjs/fuses.js'
+import type { RecordOptions } from './.utils/ensjs/generateRecordCallArray.js'
 import {
-  type RecordOptions,
   type RegistrationParameters,
   makeCommitment as generateCommitment,
   makeRegistrationTuple,
-} from '@ensdomains/ensjs/utils'
-import { encodeFuses } from './.utils/ensjs/fuses.js'
+} from './.utils/ensjs/registerHelpers.js'
 import { nonceManager } from './.utils/nonceManager.js'
 
 type Name = {
@@ -39,7 +39,7 @@ type ProcessedNameData = Omit<RegistrationParameters, 'owner'> & {
   label: string
   subnames: ProcessedSubname[]
   resolverAddress: string
-  secret: string
+  secret: Hex
   duration: number
   owner: Account
   name: string
@@ -70,7 +70,7 @@ const names: Name[] = [
         // set expiry to 24 hours ago
         expiry: Math.floor(Date.now() / 1000) - 86400,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -79,7 +79,7 @@ const names: Name[] = [
         // set expiry to 24 hours ago
         expiry: Math.floor(Date.now() / 1000) - 3600,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -87,7 +87,7 @@ const names: Name[] = [
         namedOwner: 'owner',
         expiry: Math.floor(Date.now() / 1000) - 120,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -95,7 +95,7 @@ const names: Name[] = [
         namedOwner: 'owner',
         expiry: Math.floor(Date.now() / 1000) + 120,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -104,7 +104,7 @@ const names: Name[] = [
         // set expiry to 24 hours ago
         expiry: Math.floor(Date.now() / 1000) + 3600,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -116,7 +116,7 @@ const names: Name[] = [
         label: 'not-expired',
         namedOwner: 'owner',
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
     ],
@@ -142,7 +142,7 @@ const names: Name[] = [
         namedOwner: 'deployer',
         expiry: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -150,7 +150,7 @@ const names: Name[] = [
         namedOwner: 'owner',
         expiry: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
       {
@@ -158,7 +158,7 @@ const names: Name[] = [
         namedOwner: 'deployer',
         expiry: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365,
         fuses: encodeFuses({
-          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } },
+          input: { parent: { named: ['PARENT_CANNOT_CONTROL'] } } as const,
         }),
       },
     ],
