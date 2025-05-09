@@ -241,10 +241,7 @@ const validateFuseNumber = (fuses) => {
  * @throws {FusesInvalidUnnamedFuseError} If an unnamed fuse is invalid.
  * @throws {FusesOutOfRangeError} If the fuse number is out of range.
  */
-const checkFuseObject = ({
-  reference,
-  object,
-}) => {
+const checkFuseObject = ({ reference, object }) => {
   if (!object) return 0
 
   if ('number' in object) {
@@ -268,7 +265,7 @@ const checkFuseObject = ({
 
   let fuseNumber = 0n
 
-  if ('named' in object && (object.named) && Array.isArray(object.named)) {
+  if ('named' in object && object.named && Array.isArray(object.named)) {
     for (const fuse of object.named) {
       if (!reference.Keys.includes(fuse))
         throw new FusesInvalidNamedFuseError({ fuse })
@@ -296,10 +293,7 @@ const checkFuseObject = ({
  * @throws {FusesRestrictionNotAllowedError} If the fuse restriction is not allowed.
  * @throws {FusesInvalidFuseObjectError} If the fuse object is invalid.
  */
-export const encodeFuses = ({
-  restriction,
-  input,
-}) => {
+export const encodeFuses = ({ restriction, input }) => {
   if (restriction) {
     if ('parent' in input || 'child' in input)
       throw new FusesRestrictionNotAllowedError({
@@ -369,16 +363,13 @@ export const encodeFuses = ({
  * @param {GenericFuseEnum} param0.reference - The fuse reference.
  * @returns {DecodedFuseGroup} The decoded fuse group.
  */
-const decodeFusesFromReference = ({
-  input,
-  reference,
-}) => ({
-  ...(Object.fromEntries(
+const decodeFusesFromReference = ({ input, reference }) => ({
+  ...Object.fromEntries(
     reference.Keys.map((key) => [
       key,
       (input & reference.Object[key]) === reference.Object[key],
     ]),
-  )),
+  ),
   unnamed: Object.fromEntries(
     reference.UnnamedKeys.map((key) => [
       key,

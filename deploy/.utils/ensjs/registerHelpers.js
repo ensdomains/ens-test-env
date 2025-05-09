@@ -12,9 +12,7 @@ import {
   ResolverAddressRequiredError,
 } from './errors.js'
 import { encodeFuses } from './fuses.js'
-import {
-  generateRecordCallArray,
-} from './generateRecordCallArray.js'
+import { generateRecordCallArray } from './generateRecordCallArray.js'
 
 /**
  * @typedef {Object} RegistrationParameters
@@ -55,10 +53,7 @@ const cryptoRef =
  * @param {number} [param0.campaign] - The campaign number.
  * @returns {import('viem').Hex} The generated secret.
  */
-export const randomSecret = ({
-  platformDomain,
-  campaign,
-} = {}) => {
+export const randomSecret = ({ platformDomain, campaign } = {}) => {
   const bytes = cryptoRef.getRandomValues(new Uint8Array(32))
   if (platformDomain) {
     const hash = toBytes(namehash(platformDomain))
@@ -154,9 +149,7 @@ export const makeCommitmentTuple = ({
  *   ownerControlledFuses: number
  * ]} The registration tuple.
  */
-export const makeRegistrationTuple = (
-  params,
-) => {
+export const makeRegistrationTuple = (params) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_labelhash, ...commitmentData] = makeCommitmentTuple(params)
   const label = params.name.split('.')[0]
