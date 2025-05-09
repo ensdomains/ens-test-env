@@ -11,30 +11,35 @@ import {
   CampaignReferenceTooLargeError,
   ResolverAddressRequiredError,
 } from './errors.js'
-import {  encodeFuses } from './fuses.js'
+import { encodeFuses } from './fuses.js'
 import {
   generateRecordCallArray,
 } from './generateRecordCallArray.js'
 
-export type RegistrationParameters = {
-  /** Name to register */
-  name: string
-  /** Address to set owner to */
-  owner: import('viem/accounts').Address
-  /** Duration of registration */
-  duration: number
-  /** Random 32 bytes to use for registration */
-  secret: import('viem').Hex
-  /** Custom resolver address, defaults to current public resolver deployment */
-  resolverAddress?: import('viem/accounts').Address
-  /** Records to set upon registration */
-  records?: import('./generateRecordCallArray.js').RecordOptions
-  /** Sets primary name upon registration */
-  reverseRecord?: boolean
-  /** Fuses to set upon registration */
-  fuses?: import('./fuses.js').EncodeChildFusesInputObject
-}
+/**
+ * @typedef {Object} RegistrationParameters
+ * @property {string} name - Name to register
+ * @property {import('viem/accounts').Address} owner - Address to set owner to
+ * @property {number} duration - Duration of registration
+ * @property {import('viem').Hex} secret - Random 32 bytes to use for registration
+ * @property {import('viem/accounts').Address} [resolverAddress] - Custom resolver address, defaults to current public resolver deployment
+ * @property {import('./generateRecordCallArray.js').RecordOptions} [records] - Records to set upon registration
+ * @property {boolean} [reverseRecord] - Sets primary name upon registration
+ * @property {import('./fuses.js').EncodeChildFusesInputObject} [fuses] - Fuses to set upon registration
+ */
 
+/**
+ * @typedef {[
+ *   labelHash: import('viem').Hex,
+ *   owner: import('viem/accounts').Address,
+ *   duration: bigint,
+ *   secret: import('viem').Hex,
+ *   resolver: import('viem/accounts').Address,
+ *   data: import('viem').Hex[],
+ *   reverseRecord: boolean,
+ *   ownerControlledFuses: number
+ * ]} CommitmentTuple
+ */
 
 const cryptoRef =
   (typeof crypto !== 'undefined' && crypto) ||
@@ -43,14 +48,13 @@ const cryptoRef =
     window.crypto) ||
   undefined
 
-  /**
-   * 
-   * @param {{
-  platformDomain?: string
-  campaign?: number
-}} param0 
-   * @returns 
-   */
+/**
+ * Generates a random secret.
+ * @param {Object} [param0] - The parameters for generating the secret.
+ * @param {string} [param0.platformDomain] - The platform domain.
+ * @param {number} [param0.campaign] - The campaign number.
+ * @returns {import('viem').Hex} The generated secret.
+ */
 export const randomSecret = ({
   platformDomain,
   campaign,
@@ -73,6 +77,11 @@ export const randomSecret = ({
   return toHex(bytes)
 }
 
+/**
+ * Creates a commitment tuple.
+ * @param {RegistrationParameters} params - The registration parameters.
+ * @returns {CommitmentTuple} The commitment tuple.
+ */
 export const makeCommitmentTuple = ({
   name,
   owner,
@@ -82,7 +91,7 @@ export const makeCommitmentTuple = ({
   reverseRecord,
   fuses,
   secret,
-}: RegistrationParameters): CommitmentTuple => {
+}) => {
   const labelHash = labelhash(name.split('.')[0])
   const hash = namehash(name)
   const fuseData = fuses
@@ -132,21 +141,21 @@ export const makeCommitmentTuple = ({
 }
 
 /**
- * 
- * @param {*} params 
+ * Creates a registration tuple.
+ * @param {RegistrationParameters} params - The registration parameters.
  * @returns {[
-  label: string,
-  owner: import('viem/accounts').Address,
-  duration: bigint,
-  secret: import('viem').Hex,
-  resolver: import('viem/accounts').Address,
-  data: import('viem').Hex[],
-  reverseRecord: boolean,
-  ownerControlledFuses: number,
-]}
+ *   label: string,
+ *   owner: import('viem/accounts').Address,
+ *   duration: bigint,
+ *   secret: import('viem').Hex,
+ *   resolver: import('viem/accounts').Address,
+ *   data: import('viem').Hex[],
+ *   reverseRecord: boolean,
+ *   ownerControlledFuses: number
+ * ]} The registration tuple.
  */
 export const makeRegistrationTuple = (
-  params: RegistrationParameters,
+  params,
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_labelhash, ...commitmentData] = makeCommitmentTuple(params)
@@ -155,18 +164,18 @@ export const makeRegistrationTuple = (
 }
 
 /**
- * 
+ * Creates a commitment from a tuple.
  * @param {[
-  labelHash: import('viem').Hex,
-  owner: import('viem/accounts').Address,
-  duration: bigint,
-  secret: import('viem').Hex,
-  resolver: import('viem/accounts').Address,
-  data: import('viem').Hex[],
-  reverseRecord: boolean,
-  ownerControlledFuses: number,
-]} params 
- * @returns {import('viem').Hex}
+ *   labelHash: import('viem').Hex,
+ *   owner: import('viem/accounts').Address,
+ *   duration: bigint,
+ *   secret: import('viem').Hex,
+ *   resolver: import('viem/accounts').Address,
+ *   data: import('viem').Hex[],
+ *   reverseRecord: boolean,
+ *   ownerControlledFuses: number
+ * ]} params - The commitment tuple.
+ * @returns {import('viem').Hex} The commitment.
  */
 export const makeCommitmentFromTuple = (params) => {
   return keccak256(
@@ -185,10 +194,11 @@ export const makeCommitmentFromTuple = (params) => {
     ),
   )
 }
+
 /**
- * 
- * @param {*} params 
- * @returns {import('viem').Hex}
+ * Creates a commitment.
+ * @param {RegistrationParameters} params - The registration parameters.
+ * @returns {import('viem').Hex} The commitment.
  */
-export const makeCommitment = (params: RegistrationParameters) =>
+export const makeCommitment = (params) =>
   makeCommitmentFromTuple(makeCommitmentTuple(params))

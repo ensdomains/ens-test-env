@@ -6,6 +6,9 @@ import {
   FusesRestrictionNotAllowedError,
 } from './errors.js'
 
+/**
+ * @type {Object.<string, bigint>}
+ */
 export const ChildFuses = {
   CANNOT_UNWRAP: 1n,
   CANNOT_BURN_FUSES: 2n,
@@ -15,34 +18,54 @@ export const ChildFuses = {
   CANNOT_CREATE_SUBDOMAIN: 32n,
   CANNOT_APPROVE: 64n,
 }
-export type ChildFuses = typeof ChildFuses
-export const ChildFuseKeys = Object.keys(ChildFuses) as (keyof ChildFuses)[]
 
+/**
+ * @type {string[]}
+ */
+export const ChildFuseKeys = Object.keys(ChildFuses)
+
+/**
+ * @type {Object.<string, bigint>}
+ */
 export const ParentFuses = {
   PARENT_CANNOT_CONTROL: 0x10000n,
   CAN_EXTEND_EXPIRY: 0x40000n,
 }
-export type ParentFuses = typeof ParentFuses
-export const ParentFuseKeys = Object.keys(ParentFuses) as (keyof ParentFuses)[]
 
+/**
+ * @type {string[]}
+ */
+export const ParentFuseKeys = Object.keys(ParentFuses)
+
+/**
+ * @type {Object.<string, bigint>}
+ */
 export const UserSettableFuses = {
   ...ChildFuses,
   ...ParentFuses,
 }
-export type UserSettableFuses = typeof UserSettableFuses
-export const UserSettableFuseKeys = Object.keys(
-  UserSettableFuses,
-) as (keyof UserSettableFuses)[]
 
+/**
+ * @type {string[]}
+ */
+export const UserSettableFuseKeys = Object.keys(UserSettableFuses)
+
+/**
+ * @type {Object.<string, bigint>}
+ */
 export const FullParentFuses = {
   ...ParentFuses,
   IS_DOT_ETH: 0x20000n,
 }
-export type FullParentFuses = typeof FullParentFuses
-export const FullParentFuseKeys = Object.keys(
-  FullParentFuses,
-) as (keyof FullParentFuses)[]
 
+/**
+ * @type {string[]}
+ */
+export const FullParentFuseKeys = Object.keys(FullParentFuses)
+
+/**
+ * @type {bigint[]}
+ */
 export const UnnamedChildFuses = [
   0x80n,
   0x100n,
@@ -54,7 +77,10 @@ export const UnnamedChildFuses = [
   0x4000n,
   0x8000n,
 ]
-export type UnnamedChildFuses = typeof UnnamedChildFuses
+
+/**
+ * @type {string[]}
+ */
 export const UnnamedChildFuseKeys = [
   '0x80',
   '0x100',
@@ -66,8 +92,10 @@ export const UnnamedChildFuseKeys = [
   '0x4000',
   '0x8000',
 ]
-export type UnnamedChildFuseKeys = typeof UnnamedChildFuseKeys
 
+/**
+ * @type {bigint[]}
+ */
 export const UnnamedParentFuses = [
   0x80000n,
   0x100000n,
@@ -83,7 +111,10 @@ export const UnnamedParentFuses = [
   0x40000000n,
   0x80000000n,
 ]
-export type UnnamedParentFuses = typeof UnnamedParentFuses
+
+/**
+ * @type {string[]}
+ */
 export const UnnamedParentFuseKeys = [
   '0x80000',
   '0x100000',
@@ -92,27 +123,31 @@ export const UnnamedParentFuseKeys = [
   '0x800000',
   '0x1000000',
 ]
-export type UnnamedParentFuseKeys = typeof UnnamedParentFuseKeys
 
+/**
+ * @type {Object.<string, bigint>}
+ */
 export const FuseRanges = {
   CHILD_CONTROLLED_FUSES: 0x0000ffffn,
   PARENT_CONTROLLED_FUSES: 0xffff0000n,
   USER_SETTABLE_FUSES: 0xfffdffffn,
 }
 
-type FuseRestriction = 'parent' | 'child'
+/**
+ * @typedef {Object} GenericFuseEnum
+ * @property {string} Name
+ * @property {Object.<string, bigint>} Object
+ * @property {string[]} Keys
+ * @property {bigint} Range
+ * @property {readonly bigint[]} Unnamed
+ * @property {readonly string[]} UnnamedKeys
+ * @property {bigint} Minimum
+ * @property {bigint} Maximum
+ */
 
-type GenericFuseEnum<TGroupName extends FuseRestriction = FuseRestriction> = {
-  Name: TGroupName
-  Object: Record<string, bigint>
-  Keys: string[]
-  Range: bigint
-  Unnamed: readonly bigint[]
-  UnnamedKeys: readonly string[]
-  Minimum: bigint
-  Maximum: bigint
-}
-
+/**
+ * @type {GenericFuseEnum}
+ */
 export const ChildFuseReference = {
   Name: 'child',
   Object: ChildFuses,
@@ -123,11 +158,10 @@ export const ChildFuseReference = {
   Minimum: 0n,
   Maximum: 2n ** 16n - 1n,
 }
-export type ChildFuseReferenceType = typeof ChildFuseReference & {
-  Key: keyof ChildFuseReferenceType['Object']
-  UnnamedKey: ChildFuseReferenceType['Unnamed'][number]
-}
 
+/**
+ * @type {GenericFuseEnum}
+ */
 export const ParentFuseReference = {
   Name: 'parent',
   Object: ParentFuses,
@@ -138,11 +172,10 @@ export const ParentFuseReference = {
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
 }
-export type ParentFuseReferenceType = typeof ParentFuseReference & {
-  Key: keyof ParentFuseReferenceType['Object']
-  UnnamedKey: ParentFuseReferenceType['Unnamed'][number]
-}
 
+/**
+ * @type {GenericFuseEnum}
+ */
 export const FullParentFuseReference = {
   Name: 'parent',
   Object: FullParentFuses,
@@ -153,55 +186,35 @@ export const FullParentFuseReference = {
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
 }
-export type FullParentFuseReferenceType = typeof FullParentFuseReference & {
-  Key: keyof FullParentFuseReferenceType['Object']
-  UnnamedKey: ParentFuseReferenceType['Unnamed'][number]
-}
 
-type InputFuses<NamedFuse extends string, UnnamedFuse extends bigint> =
-  | {
-      named: readonly NamedFuse[]
-      unnamed?: readonly UnnamedFuse[]
-      number?: never
-    }
-  | {
-      named?: readonly NamedFuse[]
-      unnamed: readonly UnnamedFuse[]
-      number?: never
-    }
-  | {
-      named?: never
-      unnamed?: never
-      number: bigint
-    }
+/**
+ * @typedef {Object} InputFuses
+ * @property {readonly string[]} [named]
+ * @property {readonly bigint[]} [unnamed]
+ * @property {bigint} [number]
+ */
 
-export type EncodeChildFusesInputObject = InputFuses<
-  ChildFuseReferenceType['Key'],
-  ChildFuseReferenceType['UnnamedKey']
->
-export type EncodeParentFusesInputObject = InputFuses<
-  ParentFuseReferenceType['Key'],
-  ParentFuseReferenceType['UnnamedKey']
->
+/**
+ * @typedef {InputFuses} EncodeChildFusesInputObject
+ */
 
-export type EncodeFusesInputObject =
-  | {
-      child: EncodeChildFusesInputObject
-      parent?: EncodeParentFusesInputObject
-      number?: never
-    }
-  | {
-      child?: EncodeChildFusesInputObject
-      parent: EncodeParentFusesInputObject
-      number?: never
-    }
-  | {
-      child?: never
-      parent?: never
-      number: bigint
-    }
+/**
+ * @typedef {InputFuses} EncodeParentFusesInputObject
+ */
 
-const validateFuseNumber = (fuses: bigint) => {
+/**
+ * @typedef {Object} EncodeFusesInputObject
+ * @property {EncodeChildFusesInputObject} [child]
+ * @property {EncodeParentFusesInputObject} [parent]
+ * @property {bigint} [number]
+ */
+
+/**
+ * Validates the fuse number.
+ * @param {bigint} fuses - The fuse number to validate.
+ * @throws {FusesOutOfRangeError} If the fuse number is out of range.
+ */
+const validateFuseNumber = (fuses) => {
   if (fuses > 2n ** 32n || fuses < 0n)
     throw new FusesOutOfRangeError({
       fuses,
@@ -217,13 +230,21 @@ const validateFuseNumber = (fuses: bigint) => {
     })
 }
 
-const checkFuseObject = <TFuseReference extends GenericFuseEnum>({
+/**
+ * Checks the fuse object.
+ * @param {Object} param0 - The parameters.
+ * @param {GenericFuseEnum} param0.reference - The fuse reference.
+ * @param {EncodeFusesInputObject} param0.object - The fuse object.
+ * @returns {number} The fuse number.
+ * @throws {FusesInvalidFuseObjectError} If the fuse object is invalid.
+ * @throws {FusesInvalidNamedFuseError} If a named fuse is invalid.
+ * @throws {FusesInvalidUnnamedFuseError} If an unnamed fuse is invalid.
+ * @throws {FusesOutOfRangeError} If the fuse number is out of range.
+ */
+const checkFuseObject = ({
   reference,
   object,
-}: {
-  reference: TFuseReference
-  object: EncodeFusesInputObject[TFuseReference['Name']]
-}): number => {
+}) => {
   if (!object) return 0
 
   if ('number' in object) {
@@ -247,7 +268,7 @@ const checkFuseObject = <TFuseReference extends GenericFuseEnum>({
 
   let fuseNumber = 0n
 
-  if ('named' in object && object.named) {
+  if ('named' in object && (object.named) && Array.isArray(object.named)) {
     for (const fuse of object.named) {
       if (!reference.Keys.includes(fuse))
         throw new FusesInvalidNamedFuseError({ fuse })
@@ -255,7 +276,7 @@ const checkFuseObject = <TFuseReference extends GenericFuseEnum>({
     }
   }
 
-  if ('unnamed' in object && object.unnamed) {
+  if ('unnamed' in object && object.unnamed && Array.isArray(object.unnamed)) {
     for (const fuse of object.unnamed) {
       if (!reference.Unnamed.includes(fuse))
         throw new FusesInvalidUnnamedFuseError({ fuse })
@@ -266,24 +287,19 @@ const checkFuseObject = <TFuseReference extends GenericFuseEnum>({
   return Number(fuseNumber)
 }
 
-type EncodeFusesParameters =
-  | {
-      restriction: 'child'
-      input: EncodeChildFusesInputObject
-    }
-  | {
-      restriction: 'parent'
-      input: EncodeParentFusesInputObject
-    }
-  | {
-      restriction?: never
-      input: EncodeFusesInputObject
-    }
-
+/**
+ * Encodes fuses.
+ * @param {Object} param0 - The parameters.
+ * @param {string} [param0.restriction] - The fuse restriction.
+ * @param {EncodeFusesInputObject} param0.input - The fuse input.
+ * @returns {number} The encoded fuse number.
+ * @throws {FusesRestrictionNotAllowedError} If the fuse restriction is not allowed.
+ * @throws {FusesInvalidFuseObjectError} If the fuse object is invalid.
+ */
 export const encodeFuses = ({
   restriction,
   input,
-}: EncodeFusesParameters): number => {
+}) => {
   if (restriction) {
     if ('parent' in input || 'child' in input)
       throw new FusesRestrictionNotAllowedError({
@@ -312,14 +328,14 @@ export const encodeFuses = ({
   const childFuses =
     'child' in input
       ? checkFuseObject({
-          object: input.child as any,
+          object: input.child,
           reference: ChildFuseReference,
         })
       : 0
   const parentFuses =
     'parent' in input
       ? checkFuseObject({
-          object: input.parent as any,
+          object: input.parent,
           reference: ParentFuseReference,
         })
       : 0
@@ -327,46 +343,56 @@ export const encodeFuses = ({
   return Number(childFuses | parentFuses)
 }
 
-type DecodedFuseGroup<TFuseReference extends GenericFuseEnum> = {
-  [key in TFuseReference['Keys'][number]]: boolean
-} & {
-  unnamed: {
-    [key in TFuseReference['UnnamedKeys'][number]]: boolean
-  }
-}
+/**
+ * @typedef {Object} DecodedFuseGroup
+ * @property {Object.<string, boolean>} unnamed
+ */
 
-type DecodedChildFuses = DecodedFuseGroup<ChildFuseReferenceType> & {
-  CAN_DO_EVERYTHING: boolean
-}
-type DecodedParentFuses = DecodedFuseGroup<FullParentFuseReferenceType>
+/**
+ * @typedef {DecodedFuseGroup & { CAN_DO_EVERYTHING: boolean }} DecodedChildFuses
+ */
 
-export type DecodedFuses = {
-  child: DecodedChildFuses
-  parent: DecodedParentFuses
-}
+/**
+ * @typedef {DecodedFuseGroup} DecodedParentFuses
+ */
 
-const decodeFusesFromReference = <TFuseReference extends GenericFuseEnum>({
+/**
+ * @typedef {Object} DecodedFuses
+ * @property {DecodedChildFuses} child
+ * @property {DecodedParentFuses} parent
+ */
+
+/**
+ * Decodes fuses from a reference.
+ * @param {Object} param0 - The parameters.
+ * @param {bigint} param0.input - The fuse input.
+ * @param {GenericFuseEnum} param0.reference - The fuse reference.
+ * @returns {DecodedFuseGroup} The decoded fuse group.
+ */
+const decodeFusesFromReference = ({
   input,
   reference,
-}: {
-  input: bigint
-  reference: TFuseReference
-}): DecodedFuseGroup<TFuseReference> => ({
+}) => ({
   ...(Object.fromEntries(
     reference.Keys.map((key) => [
       key,
       (input & reference.Object[key]) === reference.Object[key],
     ]),
-  ) as Record<TFuseReference['Keys'][number], boolean>),
+  )),
   unnamed: Object.fromEntries(
     reference.UnnamedKeys.map((key) => [
       key,
       (input & BigInt(key)) === BigInt(key),
     ]),
-  ) as Record<TFuseReference['UnnamedKeys'][number], boolean>,
+  ),
 })
 
-export const decodeFuses = (fuses: number): DecodedFuses => {
+/**
+ * Decodes fuses.
+ * @param {number} fuses - The fuse number to decode.
+ * @returns {DecodedFuses} The decoded fuses.
+ */
+export const decodeFuses = (fuses) => {
   const fusesBigInt = BigInt(fuses)
   return {
     parent: decodeFusesFromReference({
@@ -384,5 +410,10 @@ export const decodeFuses = (fuses: number): DecodedFuses => {
   }
 }
 
-export const checkPccBurned = (fuses: bigint) =>
+/**
+ * Checks if the PARENT_CANNOT_CONTROL fuse is burned.
+ * @param {bigint} fuses - The fuse number.
+ * @returns {boolean} True if the PARENT_CANNOT_CONTROL fuse is burned, false otherwise.
+ */
+export const checkPccBurned = (fuses) =>
   (fuses & ParentFuses.PARENT_CANNOT_CONTROL) === 0n
