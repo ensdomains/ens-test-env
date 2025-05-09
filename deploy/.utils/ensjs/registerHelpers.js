@@ -1,6 +1,4 @@
 import {
-  type Address,
-  type Hex,
   encodeAbiParameters,
   keccak256,
   pad,
@@ -13,9 +11,8 @@ import {
   CampaignReferenceTooLargeError,
   ResolverAddressRequiredError,
 } from './errors.js'
-import { type EncodeChildFusesInputObject, encodeFuses } from './fuses.js'
+import {  encodeFuses } from './fuses.js'
 import {
-  type RecordOptions,
   generateRecordCallArray,
 } from './generateRecordCallArray.js'
 
@@ -23,42 +20,21 @@ export type RegistrationParameters = {
   /** Name to register */
   name: string
   /** Address to set owner to */
-  owner: Address
+  owner: import('viem/accounts').Address
   /** Duration of registration */
   duration: number
   /** Random 32 bytes to use for registration */
-  secret: Hex
+  secret: import('viem').Hex
   /** Custom resolver address, defaults to current public resolver deployment */
-  resolverAddress?: Address
+  resolverAddress?: import('viem/accounts').Address
   /** Records to set upon registration */
-  records?: RecordOptions
+  records?: import('./generateRecordCallArray.js').RecordOptions
   /** Sets primary name upon registration */
   reverseRecord?: boolean
   /** Fuses to set upon registration */
-  fuses?: EncodeChildFusesInputObject
+  fuses?: import('./fuses.js').EncodeChildFusesInputObject
 }
 
-export type CommitmentTuple = [
-  labelHash: Hex,
-  owner: Address,
-  duration: bigint,
-  secret: Hex,
-  resolver: Address,
-  data: Hex[],
-  reverseRecord: boolean,
-  ownerControlledFuses: number,
-]
-
-export type RegistrationTuple = [
-  label: string,
-  owner: Address,
-  duration: bigint,
-  secret: Hex,
-  resolver: Address,
-  data: Hex[],
-  reverseRecord: boolean,
-  ownerControlledFuses: number,
-]
 
 const cryptoRef =
   (typeof crypto !== 'undefined' && crypto) ||
@@ -67,12 +43,17 @@ const cryptoRef =
     window.crypto) ||
   undefined
 
+  /**
+   * 
+   * @param {{
+  platformDomain?: string
+  campaign?: number
+}} param0 
+   * @returns 
+   */
 export const randomSecret = ({
   platformDomain,
   campaign,
-}: {
-  platformDomain?: string
-  campaign?: number
 } = {}) => {
   const bytes = cryptoRef.getRandomValues(new Uint8Array(32))
   if (platformDomain) {
@@ -150,16 +131,44 @@ export const makeCommitmentTuple = ({
   ]
 }
 
+/**
+ * 
+ * @param {*} params 
+ * @returns {[
+  label: string,
+  owner: import('viem/accounts').Address,
+  duration: bigint,
+  secret: import('viem').Hex,
+  resolver: import('viem/accounts').Address,
+  data: import('viem').Hex[],
+  reverseRecord: boolean,
+  ownerControlledFuses: number,
+]}
+ */
 export const makeRegistrationTuple = (
   params: RegistrationParameters,
-): RegistrationTuple => {
+) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_labelhash, ...commitmentData] = makeCommitmentTuple(params)
   const label = params.name.split('.')[0]
   return [label, ...commitmentData]
 }
 
-export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {
+/**
+ * 
+ * @param {[
+  labelHash: import('viem').Hex,
+  owner: import('viem/accounts').Address,
+  duration: bigint,
+  secret: import('viem').Hex,
+  resolver: import('viem/accounts').Address,
+  data: import('viem').Hex[],
+  reverseRecord: boolean,
+  ownerControlledFuses: number,
+]} params 
+ * @returns {import('viem').Hex}
+ */
+export const makeCommitmentFromTuple = (params) => {
   return keccak256(
     encodeAbiParameters(
       [
@@ -176,6 +185,10 @@ export const makeCommitmentFromTuple = (params: CommitmentTuple): Hex => {
     ),
   )
 }
-
-export const makeCommitment = (params: RegistrationParameters): Hex =>
+/**
+ * 
+ * @param {*} params 
+ * @returns {import('viem').Hex}
+ */
+export const makeCommitment = (params: RegistrationParameters) =>
   makeCommitmentFromTuple(makeCommitmentTuple(params))

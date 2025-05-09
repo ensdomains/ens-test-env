@@ -38,9 +38,9 @@ export class BaseError extends Error {
   cause
 
   /**
-   * 
-   * @param {string} shortMesage 
-   * @param {import('./errors.js').BaseErrorParameters} args 
+   *
+   * @param {string} shortMesage
+   * @param {import('./errors.js').BaseErrorParameters} args
    */
   constructor(shortMesage, args = {}) {
     super()
@@ -76,12 +76,7 @@ export class FusesOutOfRangeError extends BaseError {
     details?: string
   }} param0 
    */
-  constructor({
-    fuses,
-    minimum = 0n,
-    maximum = 2n ** 32n,
-    details,
-  }) {
+  constructor({ fuses, minimum = 0n, maximum = 2n ** 32n, details }) {
     super('Fuse value out of range', {
       metaMessages: [
         `- Fuse value: ${fuses}`,
@@ -102,10 +97,7 @@ export class FusesRestrictionNotAllowedError extends BaseError {
     details?: string
   }} param0 
    */
-  constructor({
-    fuses,
-    details,
-  }) {
+  constructor({ fuses, details }) {
     super('Restriction not allowed', {
       metaMessages: [`- Fuse value: ${fuses}`],
       details,
@@ -117,8 +109,8 @@ export class FusesInvalidFuseObjectError extends BaseError {
   name = 'FusesInvalidFuseObjectError'
 
   /**
-   * 
-   * @param {{ fuses: object; details?: string }} param0 
+   *
+   * @param {{ fuses: object; details?: string }} param0
    */
   constructor({ fuses, details }) {
     super('Invalid fuse value', {
@@ -140,8 +132,8 @@ export class FusesInvalidNamedFuseError extends BaseError {
   name = 'FusesInvalidNamedFuseError'
 
   /**
-   * 
-   * @param {{ fuse: string }} param0 
+   *
+   * @param {{ fuse: string }} param0
    */
   constructor({ fuse }) {
     super(`${fuse} is not a valid named fuse`)
@@ -152,8 +144,8 @@ export class FusesFuseNotAllowedError extends BaseError {
   name = 'FusesFuseNotAllowedError'
 
   /**
-   * 
-   * @param {{ fuse: string | bigint }} param0 
+   *
+   * @param {{ fuse: string | bigint }} param0
    */
   constructor({ fuse }) {
     super(`${fuse} is not allowed for this operation`)
@@ -164,8 +156,8 @@ export class FusesInvalidUnnamedFuseError extends BaseError {
   name = 'FusesInvalidUnnamedFuseError'
 
   /**
-   * 
-   * @param {{ fuse: unknown }} param0 
+   *
+   * @param {{ fuse: unknown }} param0
    */
   constructor({ fuse }) {
     super(`${fuse} is not a valid unnamed fuse`, {
@@ -180,8 +172,8 @@ export class InvalidLabelhashError extends BaseError {
   name = 'InvalidLabelhashError'
 
   /**
-   * 
-   * @param {{ labelhash: string; details?: string }} param0 
+   *
+   * @param {{ labelhash: string; details?: string }} param0
    */
   constructor({ labelhash, details }) {
     super('Invalid labelhash', {
@@ -195,8 +187,8 @@ export class CampaignReferenceTooLargeError extends BaseError {
   name = 'CampaignReferenceTooLargeError'
 
   /**
-   * 
-   * @param {{ campaign: number }} param0 
+   *
+   * @param {{ campaign: number }} param0
    */
   constructor({ campaign }) {
     super(`Campaign reference ${campaign} is too large`, {
@@ -217,7 +209,7 @@ export class ResolverAddressRequiredError extends BaseError {
   name = 'ResolverAddressRequiredError'
 
   /**
-   * 
+   *
    * @param {{ data: object }} param0
    */
   constructor({ data }) {
@@ -239,7 +231,7 @@ export class CoinFormatterNotFoundError extends BaseError {
   name = 'CoinFormatterNotFoundError'
 
   /**
-   * 
+   *
    * @param {{ coinType: string | number }} param0
    */
   constructor({ coinType }) {

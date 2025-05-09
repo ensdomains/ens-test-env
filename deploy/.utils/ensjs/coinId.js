@@ -5,7 +5,7 @@ import {
 import { CoinFormatterNotFoundError } from './errors.js'
 
 /**
- * 
+ *
  * @param {string | number} coinId
  * @returns {{type: 'id', value: number} | {type: 'name', value: string}}
  */
@@ -20,11 +20,11 @@ export const normaliseCoinId = (coinId) => {
   }
   return {
     type: 'id',
-    value: isString ? Number.parseInt(coinId) : (coinId),
+    value: isString ? Number.parseInt(coinId) : coinId,
   }
 }
 /**
- * 
+ *
  * @param {string | number} coinId
  * @returns {import('@ensdomains/address-encoder').Coin}
  */

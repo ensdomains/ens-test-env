@@ -1,8 +1,4 @@
-import {
-  bytesToHex,
-  encodeFunctionData,
-  zeroAddress,
-} from 'viem'
+import { bytesToHex, encodeFunctionData, zeroAddress } from 'viem'
 import { getCoderFromCoin } from './coinId.js'
 import { encodeContentHash } from './contentHash.js'
 import {
@@ -13,7 +9,6 @@ import {
   publicResolverSetTextSnippet,
 } from './contracts.js'
 
-
 /**
  * 
  * @param {{
@@ -23,11 +18,7 @@ import {
 }} param0 
  * @returns {import('viem').Hex}
  */
-export const encodeSetText = ({
-  namehash,
-  key,
-  value,
-}) => {
+export const encodeSetText = ({ namehash, key, value }) => {
   return encodeFunctionData({
     abi: publicResolverSetTextSnippet,
     functionName: 'setText',
@@ -67,13 +58,13 @@ export const encodeSetText = ({
  * @property {Array<Omit<EncodeSetTextParameters, 'namehash'>>} [texts] - Array of text records (without namehash)
  * @property {Array<Omit<EncodeSetAddrParameters, 'namehash'>>} [coins] - Array of coin records (without namehash)
  * @property {EncodedAbi|EncodedAbi[]} [abi] - ABI value (single or array)
- * 
+ *
  * @note The `Prettify` utility type from 'viem' is used for type readability but doesn't affect runtime behavior
  */
 /**
- * 
- * @param {import('viem').Hex} namehash 
- * @returns 
+ *
+ * @param {import('viem').Hex} namehash
+ * @returns
  */
 export const encodeClearRecords = (namehash) =>
   encodeFunctionData({
@@ -83,15 +74,11 @@ export const encodeClearRecords = (namehash) =>
   })
 
 /**
- * 
- * @param {EncodeSetAddrParameters} param0 
+ *
+ * @param {EncodeSetAddrParameters} param0
  * @returns {import('viem').Hex}
  */
-export const encodeSetAddr = ({
-  namehash,
-  coin,
-  value,
- }) => {
+export const encodeSetAddr = ({ namehash, coin, value }) => {
   const coder = getCoderFromCoin(coin)
   const inputCoinType = coder.coinType
   /**
@@ -112,15 +99,11 @@ export const encodeSetAddr = ({
 }
 
 /**
- * 
- * @param {{ namehash: import('viem').Hex} & EncodedAbi} param0 
+ *
+ * @param {{ namehash: import('viem').Hex} & EncodedAbi} param0
  * @returns {import('viem').Hex}
  */
-export const encodeSetAbi = ({
-  namehash,
-  contentType,
-  encodedData,
-}) => {
+export const encodeSetAbi = ({ namehash, contentType, encodedData }) => {
   return encodeFunctionData({
     abi: publicResolverSetAbiSnippet,
     functionName: 'setABI',
@@ -129,14 +112,11 @@ export const encodeSetAbi = ({
 }
 
 /**
- * 
- * @param {{namehash: import('viem').Hex; contentHash: string | null}} param0 
+ *
+ * @param {{namehash: import('viem').Hex; contentHash: string | null}} param0
  * @returns {import('viem').Hex}
  */
-export const encodeSetContentHash = ({
-  namehash,
-  contentHash,
-}) => {
+export const encodeSetContentHash = ({ namehash, contentHash }) => {
   /**
    * @type {import('viem').Hex}
    */
@@ -151,8 +131,8 @@ export const encodeSetContentHash = ({
   })
 }
 /**
- * 
- * @param {{ namehash: import('viem').Hex } & RecordOptions} param0 
+ *
+ * @param {{ namehash: import('viem').Hex } & RecordOptions} param0
  * @returns {import('viem').Hex[]}
  */
 export const generateRecordCallArray = ({

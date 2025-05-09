@@ -14,21 +14,21 @@ export const ChildFuses = {
   CANNOT_SET_TTL: 16n,
   CANNOT_CREATE_SUBDOMAIN: 32n,
   CANNOT_APPROVE: 64n,
-} as const
+}
 export type ChildFuses = typeof ChildFuses
 export const ChildFuseKeys = Object.keys(ChildFuses) as (keyof ChildFuses)[]
 
 export const ParentFuses = {
   PARENT_CANNOT_CONTROL: 0x10000n,
   CAN_EXTEND_EXPIRY: 0x40000n,
-} as const
+}
 export type ParentFuses = typeof ParentFuses
 export const ParentFuseKeys = Object.keys(ParentFuses) as (keyof ParentFuses)[]
 
 export const UserSettableFuses = {
   ...ChildFuses,
   ...ParentFuses,
-} as const
+}
 export type UserSettableFuses = typeof UserSettableFuses
 export const UserSettableFuseKeys = Object.keys(
   UserSettableFuses,
@@ -37,7 +37,7 @@ export const UserSettableFuseKeys = Object.keys(
 export const FullParentFuses = {
   ...ParentFuses,
   IS_DOT_ETH: 0x20000n,
-} as const
+}
 export type FullParentFuses = typeof FullParentFuses
 export const FullParentFuseKeys = Object.keys(
   FullParentFuses,
@@ -53,7 +53,7 @@ export const UnnamedChildFuses = [
   0x2000n,
   0x4000n,
   0x8000n,
-] as const
+]
 export type UnnamedChildFuses = typeof UnnamedChildFuses
 export const UnnamedChildFuseKeys = [
   '0x80',
@@ -65,7 +65,7 @@ export const UnnamedChildFuseKeys = [
   '0x2000',
   '0x4000',
   '0x8000',
-] as const
+]
 export type UnnamedChildFuseKeys = typeof UnnamedChildFuseKeys
 
 export const UnnamedParentFuses = [
@@ -82,7 +82,7 @@ export const UnnamedParentFuses = [
   0x20000000n,
   0x40000000n,
   0x80000000n,
-] as const
+]
 export type UnnamedParentFuses = typeof UnnamedParentFuses
 export const UnnamedParentFuseKeys = [
   '0x80000',
@@ -91,14 +91,14 @@ export const UnnamedParentFuseKeys = [
   '0x400000',
   '0x800000',
   '0x1000000',
-] as const
+]
 export type UnnamedParentFuseKeys = typeof UnnamedParentFuseKeys
 
 export const FuseRanges = {
   CHILD_CONTROLLED_FUSES: 0x0000ffffn,
   PARENT_CONTROLLED_FUSES: 0xffff0000n,
   USER_SETTABLE_FUSES: 0xfffdffffn,
-} as const
+}
 
 type FuseRestriction = 'parent' | 'child'
 
@@ -122,7 +122,7 @@ export const ChildFuseReference = {
   UnnamedKeys: UnnamedChildFuseKeys,
   Minimum: 0n,
   Maximum: 2n ** 16n - 1n,
-} as const
+}
 export type ChildFuseReferenceType = typeof ChildFuseReference & {
   Key: keyof ChildFuseReferenceType['Object']
   UnnamedKey: ChildFuseReferenceType['Unnamed'][number]
@@ -137,7 +137,7 @@ export const ParentFuseReference = {
   UnnamedKeys: UnnamedParentFuseKeys,
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
-} as const
+}
 export type ParentFuseReferenceType = typeof ParentFuseReference & {
   Key: keyof ParentFuseReferenceType['Object']
   UnnamedKey: ParentFuseReferenceType['Unnamed'][number]
@@ -152,7 +152,7 @@ export const FullParentFuseReference = {
   UnnamedKeys: UnnamedParentFuseKeys,
   Minimum: 2n ** 16n,
   Maximum: 2n ** 32n,
-} as const
+}
 export type FullParentFuseReferenceType = typeof FullParentFuseReference & {
   Key: keyof FullParentFuseReferenceType['Object']
   UnnamedKey: ParentFuseReferenceType['Unnamed'][number]

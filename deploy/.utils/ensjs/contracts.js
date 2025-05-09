@@ -12,7 +12,7 @@ export const publicResolverClearRecordsSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] 
+]
 
 export const publicResolverSetTextSnippet = [
   {
@@ -35,7 +35,7 @@ export const publicResolverSetTextSnippet = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-] 
+]
 
 export const publicResolverSetAddrSnippet = [
   {
