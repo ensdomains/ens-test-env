@@ -82,4 +82,4 @@ func.id = 'deploy-legacy-resolvers'
 func.tags = ['deploy-legacy-resolvers']
 func.runAtTheEnd = true
 
-module.exports = func
+export default func

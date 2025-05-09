@@ -69,7 +69,7 @@ const config = {
       {
         artifacts: [
           resolve(ensContractsPath, 'artifacts'),
-          // resolve(ensContractsPath, './deployments/archive'),
+          resolve(ensContractsPath, './deployments/archive'),
         ],
         deploy: resolve(ensContractsPath, './build/deploy'),
       },
