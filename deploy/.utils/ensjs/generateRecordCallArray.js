@@ -18,8 +18,8 @@ import {
  * 
  * @param {{
   namehash: import('viem').Hex
-  key: string
-  value: string | null
+  key?: string
+  value?: string | null
 }} param0 
  * @returns {import('viem').Hex}
  */
@@ -35,30 +35,41 @@ export const encodeSetText = ({
   })
 }
 
-type AbiContentType = 1 | 2 | 4 | 8
-export type EncodedAbi<TContentType extends AbiContentType = AbiContentType> = {
-  contentType: TContentType
-  encodedData: import('viem').Hex
-}
+/**
+ * @typedef {1|2|4|8} AbiContentType
+ */
 
-export type EncodeSetAddrParameters = {
-  namehash: import('viem').Hex
-  coin: string | number
-  value: import('hardhat-deploy/types.js').Address | string | null
-}
+/**
+ * @template {AbiContentType} [TContentType=AbiContentType]
+ * @typedef {Object} EncodedAbi
+ * @property {TContentType} contentType - Content type identifier
+ * @property {import('viem').Hex} encodedData - Encoded ABI data
+ */
 
-export type RecordOptions = import('viem').Prettify<{
-  /** Clears all current records */
-  clearRecords?: boolean
-  /** ContentHash value */
-  contentHash?: string | null
-  /** Array of text records */
-  texts?: Omit<EncodeSetTextParameters, 'namehash'>[]
-  /** Array of coin records */
-  coins?: Omit<EncodeSetAddrParameters, 'namehash'>[]
-  /** ABI value */
-  abi?: EncodedAbi | EncodedAbi[]
-}>
+/**
+ * @typedef {Object} EncodeSetAddrParameters
+ * @property {import('viem').Hex} namehash - Namehash of the ENS domain
+ * @property {string|number} coin - Coin type (string name or number)
+ * @property {import('hardhat-deploy/types.js').Address|string|null} value - Address value or null
+ */
+
+/**
+ * @typedef {Object} EncodeSetTextParameters
+ * @property {import('viem').Hex} namehash - Namehash of the ENS domain
+ * @property {string} key - Text record key
+ * @property {string|null} value - Text record value or null
+ */
+
+/**
+ * @typedef {Object} RecordOptions
+ * @property {boolean} [clearRecords] - Clears all current records
+ * @property {string|null} [contentHash] - ContentHash value
+ * @property {Array<Omit<EncodeSetTextParameters, 'namehash'>>} [texts] - Array of text records (without namehash)
+ * @property {Array<Omit<EncodeSetAddrParameters, 'namehash'>>} [coins] - Array of coin records (without namehash)
+ * @property {EncodedAbi|EncodedAbi[]} [abi] - ABI value (single or array)
+ * 
+ * @note The `Prettify` utility type from 'viem' is used for type readability but doesn't affect runtime behavior
+ */
 /**
  * 
  * @param {import('viem').Hex} namehash 

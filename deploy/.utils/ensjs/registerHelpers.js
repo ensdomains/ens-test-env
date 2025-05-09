@@ -74,7 +74,7 @@ export const randomSecret = ({
   platformDomain?: string
   campaign?: number
 } = {}) => {
-  const bytes = cryptoRef!.getRandomValues(new Uint8Array(32))
+  const bytes = cryptoRef.getRandomValues(new Uint8Array(32))
   if (platformDomain) {
     const hash = toBytes(namehash(platformDomain))
     for (let i = 0; i < 4; i += 1) {
