@@ -32,7 +32,7 @@
     "@types/js-yaml": "^4.0.9",
     "cbor": "^10.0.3",
     "hardhat": "^2.24.0",
-    "hardhat-deploy": "^0.12.4",
+    "hardhat-deploy": "^1.0.2",
     "typescript": "^5.3.2",
     "viem": "^2.29.1"
   },
@@ -44,12 +44,7 @@
     "@nomicfoundation/hardhat-viem": "^2.0.6",
     "cbor": "^10.0.3",
     "hardhat": "^2.24.0",
-    "hardhat-deploy": "^0.12.4",
+    "hardhat-deploy": "^1.0.2",
     "viem": "^2.29.1"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "hardhat-deploy@0.12.4": "patches/hardhat-deploy@0.12.4.patch"
-    }
   }
 }
