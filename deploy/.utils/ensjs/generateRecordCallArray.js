@@ -13,22 +13,21 @@ import {
   publicResolverSetTextSnippet,
 } from './contracts.js'
 
-export type EncodeSetTextParameters = {
-  namehash: import('viem').Hex
-  key: string
-  value: string | null
-}
 
 /**
  * 
- * @param {EncodeSetAbiParameters} param0 
+ * @param {{
+  namehash: import('viem').Hex
+  key: string
+  value: string | null
+}} param0 
  * @returns {import('viem').Hex}
  */
 export const encodeSetText = ({
   namehash,
   key,
   value,
-}: EncodeSetTextParameters) => {
+}) => {
   return encodeFunctionData({
     abi: publicResolverSetTextSnippet,
     functionName: 'setText',
@@ -60,8 +59,12 @@ export type RecordOptions = import('viem').Prettify<{
   /** ABI value */
   abi?: EncodedAbi | EncodedAbi[]
 }>
-
-export const encodeClearRecords = (namehash: import('viem').Hex) =>
+/**
+ * 
+ * @param {import('viem').Hex} namehash 
+ * @returns 
+ */
+export const encodeClearRecords = (namehash) =>
   encodeFunctionData({
     abi: publicResolverClearRecordsSnippet,
     functionName: 'clearRecords',
