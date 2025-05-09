@@ -10,6 +10,30 @@ import {
   stringToBytes,
 } from 'viem'
 
+/**
+ * @typedef {Object} Name
+ * @property {string} label
+ * @property {string} namedOwner
+ * @property {string} namedAddr
+ * @property {string} [subname]
+ * @property {string} [namedController]
+ * @property {import('viem/accounts').Address} [resolver]
+ * @property {Object} [records]
+ * @property {{ key: string, value: string }[]} [records.text]
+ * @property {{ key: bigint, value: import('viem').Hash }[]} [records.addr]
+ * @property {import('viem').Hash} [records.contenthash]
+ * @property {{
+*   contentType: bigint,
+*   data: any
+* } | {
+*   contentType: bigint,
+*   data: any
+* }[]} [records.abi]
+* @property {{ label: string, namedOwner: string }[]} [subnames]
+* @property {bigint} [customDuration]
+*/
+
+
 const dummyABI = [
   {
     type: 'event',

@@ -10,6 +10,44 @@ import {
 } from './.utils/ensjs/registerHelpers.js'
 import { nonceManager } from './.utils/nonceManager.js'
 
+/**
+ * @typedef {Object} Name
+ * @property {string} name
+ * @property {string} namedOwner
+ * @property {boolean} [reverseRecord]
+ * @property {import('./.utils/ensjs/generateRecordCallArray.js').RecordOptions} [records]
+ * @property {import('./.utils/ensjs/registerHelpers.js').RegistrationParameters['fuses']} [fuses]
+ * @property {number} [customDuration]
+ * @property {{
+*   label: string,
+*   namedOwner: string,
+*   fuses?: number,
+*   expiry?: number
+* }[]} [subnames]
+*/
+
+/**
+* @typedef {Object} ProcessedSubname
+* @property {string} label
+* @property {import('viem/accounts').Account} owner
+* @property {number} expiry
+* @property {number} fuses
+*/
+
+/**
+* @typedef {Omit<import('./.utils/ensjs/registerHelpers.js').RegistrationParameters, 'owner'> & {
+*   label: string,
+*   subnames: ProcessedSubname[],
+*   resolverAddress: import('viem/accounts').Address,
+*   secret: import('viem').Hex,
+*   duration: number,
+*   owner: import('viem/accounts').Account,
+*   name: string,
+*   fuses?: import('./.utils/ensjs/registerHelpers.js').RegistrationParameters['fuses']
+* }} ProcessedNameData
+*/
+
+
 /** @type {{ readonly parent: { readonly named: readonly ['PARENT_CANNOT_CONTROL'] } }} */
 const parentPcc = { parent: { named: ['PARENT_CANNOT_CONTROL'] } }
 /**
