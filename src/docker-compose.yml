@@ -10,7 +10,7 @@ services:
 
   ensindexer:
     container_name: ensindexer
-    image: ghcr.io/namehash/ensnode/ensindexer:0.26.0
+    image: ghcr.io/namehash/ensnode/ensindexer:0.29.0
     pull_policy: always
     ports:
       - "42069:42069"
@@ -25,19 +25,22 @@ services:
       ENSRAINBOW_URL: http://ensrainbow:3223
       DATABASE_URL: postgresql://postgres:password@postgres:5432/postgres
       DATABASE_SCHEMA: ens-test-env
-      ENS_DEPLOYMENT_CHAIN: ens-test-env
+      NAMESPACE: ens-test-env
       HEAL_REVERSE_ADDRESSES: false
-      INDEX_RESOLVER_RECORDS: false
-      ACTIVE_PLUGINS: subgraph
+      INDEX_ADDITIONAL_RESOLVER_RECORDS: false
+      PLUGINS: subgraph
       NEXT_PUBLIC_DEPLOYMENT_ADDRESSES: ${NEXT_PUBLIC_DEPLOYMENT_ADDRESSES:-}
       DEPLOYMENT_ADDRESSES: ${DEPLOYMENT_ADDRESSES:-}
 
   ensrainbow:
     container_name: ensrainbow
-    image: ghcr.io/namehash/ensnode/ensrainbow-test:latest
+    image: ghcr.io/namehash/ensnode/ensrainbow-test:0.29.0
     pull_policy: always
     environment:
       LOG_LEVEL: error
+      SCHEMA_VERSION: v3
+      NAMESPACE: testenv
+      LABEL_SET: 0
 
   postgres:
     container_name: postgres
