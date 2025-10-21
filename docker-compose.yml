@@ -1,7 +1,7 @@
 services:
   devnet:
     container_name: devnet
-    image: ghcr.io/ensdomains/namechain:40675b8
+    image: ghcr.io/ensdomains/namechain:latest
     pull_policy: always
     ports:
       - "8545:8545" # L1 chain
